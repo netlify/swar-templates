@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite'
-import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
@@ -9,9 +8,7 @@ import contentCollections from '@content-collections/vite'
 
 const config = defineConfig({
   plugins: [
-    devtools(),
     contentCollections(),
-    ,
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
     }),

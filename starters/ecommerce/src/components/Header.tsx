@@ -2,8 +2,6 @@ import { Link } from '@tanstack/react-router'
 
 import HeaderNav from './HeaderNav'
 
-import MotorcycleAIAssistant from '@/components/MotorcycleAIAssistant'
-
 export default function Header() {
   return (
     <>
@@ -26,10 +24,6 @@ export default function Header() {
             </Link>
           </div>
         </nav>
-
-        <div className="ml-auto">
-          <MotorcycleAIAssistant />
-        </div>
       </header>
     </>
   )

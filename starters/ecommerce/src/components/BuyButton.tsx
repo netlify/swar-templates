@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { createCheckoutSession } from '@/lib/stripe.server'
+import { useEffect, useState } from 'react'
+import { createCheckoutSession, getStripeEnabled } from '@/lib/stripe.server'
 
 export function BuyButton({
   motorcycleId,
@@ -9,6 +9,11 @@ export function BuyButton({
   className?: string
 }) {
   const [loading, setLoading] = useState(false)
+  const [stripeEnabled, setStripeEnabled] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    getStripeEnabled().then(setStripeEnabled)
+  }, [])
 
   const handleClick = async () => {
     setLoading(true)
@@ -23,10 +28,22 @@ export function BuyButton({
     }
   }
 
+  if (stripeEnabled === false) {
+    return (
+      <button
+        disabled
+        className={`bg-gray-400 cursor-not-allowed text-white px-6 py-2 rounded-lg ${className}`}
+        title="Checkout is not available"
+      >
+        Checkout Unavailable
+      </button>
+    )
+  }
+
   return (
     <button
       onClick={handleClick}
-      disabled={loading}
+      disabled={loading || stripeEnabled === null}
       className={`bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 disabled:cursor-wait text-white px-6 py-2 rounded-lg transition-colors ${className}`}
     >
       {loading ? 'Processing...' : 'Buy Now'}

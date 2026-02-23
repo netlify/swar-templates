@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PostsSlugRouteImport } from './routes/posts.$slug'
 import { Route as CategoryCategoryRouteImport } from './routes/category.$category'
-import { Route as ApiBlogChatRouteImport } from './routes/api.blog-chat'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,47 +28,33 @@ const CategoryCategoryRoute = CategoryCategoryRouteImport.update({
   path: '/category/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiBlogChatRoute = ApiBlogChatRouteImport.update({
-  id: '/api/blog-chat',
-  path: '/api/blog-chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/api/blog-chat': typeof ApiBlogChatRoute
   '/category/$category': typeof CategoryCategoryRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/api/blog-chat': typeof ApiBlogChatRoute
   '/category/$category': typeof CategoryCategoryRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/api/blog-chat': typeof ApiBlogChatRoute
   '/category/$category': typeof CategoryCategoryRoute
   '/posts/$slug': typeof PostsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/blog-chat' | '/category/$category' | '/posts/$slug'
+  fullPaths: '/' | '/category/$category' | '/posts/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/blog-chat' | '/category/$category' | '/posts/$slug'
-  id:
-    | '__root__'
-    | '/'
-    | '/api/blog-chat'
-    | '/category/$category'
-    | '/posts/$slug'
+  to: '/' | '/category/$category' | '/posts/$slug'
+  id: '__root__' | '/' | '/category/$category' | '/posts/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ApiBlogChatRoute: typeof ApiBlogChatRoute
   CategoryCategoryRoute: typeof CategoryCategoryRoute
   PostsSlugRoute: typeof PostsSlugRoute
 }
@@ -97,19 +82,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoryCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/blog-chat': {
-      id: '/api/blog-chat'
-      path: '/api/blog-chat'
-      fullPath: '/api/blog-chat'
-      preLoaderRoute: typeof ApiBlogChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ApiBlogChatRoute: ApiBlogChatRoute,
   CategoryCategoryRoute: CategoryCategoryRoute,
   PostsSlugRoute: PostsSlugRoute,
 }

@@ -3,8 +3,6 @@ import { marked } from 'marked'
 
 import { allPosts } from 'content-collections'
 
-import VacayAssistant from '@/components/VacayAssistant'
-
 export const Route = createFileRoute('/posts/$slug')({
   loader: async ({ params }) => {
     const post = allPosts.find((post) => post.slug === params.slug)
@@ -21,8 +19,6 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <VacayAssistant slug={post.slug} postTitle={post.title} />
-
       <div
         className="relative h-[66vh]"
         style={{

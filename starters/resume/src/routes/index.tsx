@@ -13,8 +13,6 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 
-import ResumeAssistant from '@/components/ResumeAssistant'
-
 export const Route = createFileRoute('/')({
   component: App,
 })
@@ -40,9 +38,7 @@ function App() {
   }, [selectedTags])
 
   return (
-    <>
-      <ResumeAssistant />
-      <div className="min-h-screen bg-linear-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 to-gray-100">
         <div className="flex">
           {/* Sidebar with filters */}
           <div className="w-72 min-h-screen bg-white border-r shadow-sm p-8 sticky top-0">
@@ -215,6 +211,5 @@ function App() {
           </div>
         </div>
       </div>
-    </>
   )
 }

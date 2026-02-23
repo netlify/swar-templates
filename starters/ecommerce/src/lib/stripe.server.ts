@@ -2,13 +2,20 @@ import Stripe from 'stripe'
 import { createServerFn } from '@tanstack/react-start'
 import motorcycles from '@/data/motorcycles'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+export const getStripeEnabled = createServerFn({ method: 'GET' }).handler(
+  () => !!process.env.STRIPE_SECRET_KEY
+)
 
 export const createCheckoutSession = createServerFn({
   method: 'POST',
 })
   .inputValidator((motorcycleId: number) => motorcycleId)
   .handler(async ({ data: motorcycleId }) => {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('Stripe is not configured')
+    }
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
     const motorcycle = motorcycles.find((m) => m.id === motorcycleId)
     if (!motorcycle) {
       throw new Error('Motorcycle not found')

@@ -29,7 +29,7 @@
       "name": "Blog",
       "description": "A Hawaii adventures travel blog built with content-collections and TanStack Start for Netlify.",
       "type": "example",
-      "features": ["tanstack-start", "content-collections", "tanstack-ai"],
+      "features": ["tanstack-start", "content-collections"],
       "framework": "tanstack-start-react"
     },
     {
@@ -51,31 +51,23 @@
     {
       "id": "ecommerce",
       "name": "Ecommerce",
-      "description": "A motorcycle ecommerce site with Stripe checkout and AI shopping assistant built with TanStack Start for Netlify.",
+      "description": "A motorcycle ecommerce site with Stripe checkout built with TanStack Start for Netlify.",
       "type": "example",
-      "features": ["tanstack-start", "stripe", "tanstack-ai"],
-      "framework": "tanstack-start-react"
-    },
-    {
-      "id": "events",
-      "name": "Events",
-      "description": "A pastry conference website with speakers, sessions, schedule, and AI assistant built with content-collections and TanStack Start for Netlify.",
-      "type": "example",
-      "features": ["tanstack-start", "content-collections", "tanstack-ai"],
+      "features": ["tanstack-start", "stripe"],
       "framework": "tanstack-start-react"
     },
     {
       "id": "marketing",
       "name": "Marketing",
-      "description": "AI-powered motorcycle marketing site with TanStack AI chat assistant for Netlify.",
+      "description": "A motorcycle marketing site built with TanStack Start for Netlify.",
       "type": "example",
-      "features": ["tanstack-start", "tanstack-ai"],
+      "features": ["tanstack-start"],
       "framework": "tanstack-start-react"
     },
     {
       "id": "portfolio",
       "name": "Portfolio",
-      "description": "A developer portfolio with resume, blog, projects, and AI assistant built with content-collections and TanStack Start for Netlify.",
+      "description": "A developer portfolio with resume, blog, projects, and contact form built with content-collections and TanStack Start for Netlify.",
       "type": "example",
       "features": ["tanstack-start", "content-collections", "netlify-forms"],
       "framework": "tanstack-start-react"
@@ -85,7 +77,7 @@
       "name": "Resume",
       "description": "Professional resume template with content-collections and shadcn UI components for Netlify.",
       "type": "example",
-      "features": ["tanstack-start", "content-collections", "tanstack-ai"],
+      "features": ["tanstack-start", "content-collections"],
       "framework": "tanstack-start-react"
     },
     {

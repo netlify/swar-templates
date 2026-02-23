@@ -8,9 +8,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
-    "@tanstack/react-devtools": "^0.9.3",
     "@tanstack/react-router": "^1.132.0",
-    "@tanstack/react-router-devtools": "^1.132.0",
     "@tanstack/react-start": "^1.132.0",
     "@tanstack/react-store": "^0.8.0",
     "@tanstack/router-plugin": "^1.132.0",
@@ -26,7 +24,6 @@
   "devDependencies": {
     "@netlify/vite-plugin-tanstack-start": "^1.2.3",
     "@tailwindcss/vite": "^4.0.6",
-    "@tanstack/devtools-vite": "^0.4.1",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

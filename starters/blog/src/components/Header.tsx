@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router'
 
 import HeaderNav from './HeaderNav'
-import { showVacayAssistant } from './VacayAssistant'
 
 import { allPosts } from 'content-collections'
 
@@ -9,10 +8,6 @@ export default function Header() {
   const categories = Array.from(
     new Set(allPosts.flatMap((post) => post.categories)),
   )
-
-  const handleVacayClick = () => {
-    showVacayAssistant.setState(() => true)
-  }
 
   return (
     <>
@@ -38,13 +33,6 @@ export default function Header() {
               ))}
             </div>
           </div>
-          <button
-            onClick={handleVacayClick}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-linear-to-r from-amber-400/90 via-orange-500/90 to-rose-500/90 hover:from-amber-400 hover:via-orange-500 hover:to-rose-500 text-white font-semibold text-sm transition-all hover:shadow-lg hover:shadow-orange-500/20 hover:scale-[1.02]"
-          >
-            <span className="text-base">🌴</span>
-            <span className="tracking-wide">Vacay Assistant</span>
-          </button>
         </nav>
       </header>
     </>
