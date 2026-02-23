@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "frameworks": [
+    {
+      "id": "tanstack-start-react",
+      "name": "TanStack Start React",
+      "description": "A framework for building web applications with TanStack Start and React.",
+      "features": ["tanstack-start", "react"]
+    }
+  ],
+  "starters": [
+    {
+      "id": "basic",
+      "name": "Basic",
+      "description": "A basic starter kit for building web applications with TanStack Start and React.",
+      "features": ["tanstack-start", "react"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "ai-chat",
+      "name": "AI Chat",
+      "description": "A weather chat assistant powered by TanStack AI with multi-provider support for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "tanstack-ai"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "blog",
+      "name": "Blog",
+      "description": "A Hawaii adventures travel blog built with content-collections and TanStack Start for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "content-collections", "tanstack-ai"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "calculator",
+      "name": "Calculator",
+      "description": "A sleek iOS-style calculator built with TanStack Start and Tailwind CSS for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "dashboard",
+      "name": "Dashboard",
+      "description": "An analytics dashboard with charts built with Chart.js, TanStack Start, and Tailwind CSS for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "chart.js"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "ecommerce",
+      "name": "Ecommerce",
+      "description": "A motorcycle ecommerce site with Stripe checkout and AI shopping assistant built with TanStack Start for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "stripe", "tanstack-ai"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "events",
+      "name": "Events",
+      "description": "A pastry conference website with speakers, sessions, schedule, and AI assistant built with content-collections and TanStack Start for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "content-collections", "tanstack-ai"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing",
+      "description": "AI-powered motorcycle marketing site with TanStack AI chat assistant for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "tanstack-ai"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "portfolio",
+      "name": "Portfolio",
+      "description": "A developer portfolio with resume, blog, projects, and AI assistant built with content-collections and TanStack Start for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "content-collections", "netlify-forms"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "resume",
+      "name": "Resume",
+      "description": "Professional resume template with content-collections and shadcn UI components for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "content-collections", "tanstack-ai"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "saas",
+      "name": "SaaS",
+      "description": "A SaaS landing page with pricing, features, and FAQ built with TanStack Start and Tailwind CSS for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start"],
+      "framework": "tanstack-start-react"
+    },
+    {
+      "id": "survey",
+      "name": "Survey",
+      "description": "A movie survey form using Netlify Forms with TanStack Start for Netlify.",
+      "type": "example",
+      "features": ["tanstack-start", "netlify-forms"],
+      "framework": "tanstack-start-react"
+    }
+  ]
+}

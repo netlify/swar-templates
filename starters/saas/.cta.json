@@ -1,0 +1,19 @@
+{
+  "projectName": "saas",
+  "mode": "file-router",
+  "typescript": true,
+  "tailwind": true,
+  "packageManager": "pnpm",
+  "git": true,
+  "install": true,
+  "addOnOptions": {
+    "project": {
+      "bareBones": true
+    }
+  },
+  "version": 1,
+  "framework": "netlify-start",
+  "chosenAddOns": [
+    "saas"
+  ]
+}
