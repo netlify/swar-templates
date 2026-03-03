@@ -15,12 +15,7 @@ export default function Header() {
               to="/"
               className="hover:text-orange-400 transition-colors flex flex-row items-center"
             >
-              <img
-                src="/logo.png"
-                alt="Luna-C Motorcycles"
-                className="w-20 h-20"
-              />
-              <span className="text-2xl font-bold">Luna-C Motorcycles</span>
+              <span className="text-2xl font-bold">Product Company</span>
             </Link>
           </div>
         </nav>

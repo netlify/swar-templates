@@ -94,12 +94,10 @@ function App() {
                 <CardContent>
                   <div className="flex items-center gap-8">
                     <p className="text-gray-700 flex-1 leading-relaxed">
-                      I am a passionate and driven professional seeking
-                      opportunities that will leverage my extensive experience
-                      in frontend development while providing continuous growth
-                      and learning opportunities. My goal is to contribute to
-                      innovative projects that challenge me to expand my skill
-                      set and make meaningful impacts through technology.
+                      A brief summary of your professional background,
+                      key skills, and career goals. Highlight what makes
+                      you unique and what you are looking for in your next
+                      opportunity.
                     </p>
                     <img
                       src="/headshot-on-white.jpg"

@@ -1,17 +1,14 @@
 ---
-school: Code School
-summary: Full Stack Development
+school: School 1
+summary: Degree or Certificate Program
 startDate: 2020-01-01
 endDate: 2020-12-31
 tags:
   [
-    "Full Stack Development",
-    "JavaScript",
-    "React",
-    "Node.js",
-    "Express",
-    "MongoDB",
+    "Skill 1",
+    "Skill 2",
+    "Skill 3",
   ]
 ---
 
-Completed a comprehensive full stack development course covering JavaScript, React, Node.js, Express, and MongoDB. Gained hands-on experience with modern web development frameworks and databases while building a full stack application.
+Description of the program and what was learned.

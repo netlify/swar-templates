@@ -18,7 +18,7 @@ export default function HeaderNav() {
         </button>
         <h1 className="ml-4 text-xl font-semibold">
           <Link to="/">
-            <span className="text-white text-xl font-bold">Luna-C Motorcycles</span>
+            <span className="text-white text-xl font-bold">Product Company</span>
           </Link>
         </h1>
       </header>

@@ -1,17 +1,6 @@
 import { useState } from 'react'
 
-const movieOptions = [
-  'The Shawshank Redemption',
-  'The Godfather',
-  'The Dark Knight',
-  'Pulp Fiction',
-  'Forrest Gump',
-  'The Matrix',
-  'Goodfellas',
-  'Star Wars: A New Hope',
-  'Jurassic Park',
-  'Back to the Future',
-]
+const seasonOptions = ['Spring', 'Summer', 'Autumn', 'Winter']
 
 export default function SurveyForm() {
   const [submitted, setSubmitted] = useState(false)
@@ -30,14 +19,14 @@ export default function SurveyForm() {
   return (
     <div className="w-full max-w-md px-4">
       <h1 className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
-        Best Movie Ever?
+        What&apos;s your favorite season?
       </h1>
       <p className="text-teal-100/80 mb-8">
-        Pick your favorite movie and tell us why you love it.
+        Pick your favorite season and tell us why you love it.
       </p>
 
       <form
-        name="best-movie-survey"
+        name="favorite-season-survey"
         method="POST"
         data-netlify="true"
         netlify-honeypot="bot-field"
@@ -52,7 +41,7 @@ export default function SurveyForm() {
           }).then(() => setSubmitted(true))
         }}
       >
-        <input type="hidden" name="form-name" value="best-movie-survey" />
+        <input type="hidden" name="form-name" value="favorite-season-survey" />
         <p className="hidden" style={{ display: 'none' }}>
           <label>
             Don&apos;t fill this out: <input name="bot-field" />
@@ -78,23 +67,23 @@ export default function SurveyForm() {
 
         <div>
           <label
-            htmlFor="movie"
+            htmlFor="season"
             className="block text-sm font-medium text-teal-200 mb-2"
           >
-            Best Movie
+            Favorite Season
           </label>
           <select
-            id="movie"
-            name="movie"
+            id="season"
+            name="season"
             required
             className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent"
           >
             <option value="" className="bg-gray-800">
-              Select a movie...
+              Select a season...
             </option>
-            {movieOptions.map((movie) => (
-              <option key={movie} value={movie} className="bg-gray-800">
-                {movie}
+            {seasonOptions.map((season) => (
+              <option key={season} value={season} className="bg-gray-800">
+                {season}
               </option>
             ))}
           </select>
@@ -112,7 +101,7 @@ export default function SurveyForm() {
             name="reason"
             rows={3}
             className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-teal-300/50 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent resize-none"
-            placeholder="Tell us why you love this movie..."
+            placeholder="Tell us why you love this season..."
           />
         </div>
 

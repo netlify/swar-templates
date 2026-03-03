@@ -19,11 +19,11 @@ function Home() {
           <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
             Ship faster with{' '}
             <span className="bg-linear-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              Acme SaaS
+              My SaaS
             </span>
           </h1>
           <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10">
-            Acme SaaS gives your team real-time analytics, automated workflows,
+            My SaaS gives your team real-time analytics, automated workflows,
             and seamless collaboration — all in one place. Stop juggling tools
             and start shipping.
           </p>
@@ -128,7 +128,7 @@ function Home() {
 
       {/* Footer */}
       <footer className="border-t border-white/5 py-10 px-4 text-center text-gray-500 text-sm">
-        &copy; 2026 Acme SaaS. All rights reserved.
+        &copy; 2026 My SaaS. All rights reserved.
       </footer>
     </div>
   )

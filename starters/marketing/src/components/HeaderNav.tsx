@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 
 import { useState } from 'react'
-import { Globe, Home, Menu, X } from 'lucide-react'
+import { Home, Menu, X } from 'lucide-react'
 
 export default function HeaderNav() {
   const [isOpen, setIsOpen] = useState(false)
@@ -18,7 +18,7 @@ export default function HeaderNav() {
         </button>
         <h1 className="ml-4 text-xl font-semibold">
           <Link to="/">
-            <span className="text-white text-xl font-bold">Luna-C Motorcycles</span>
+            <span className="text-white text-xl font-bold">Product Company</span>
           </Link>
         </h1>
       </header>
@@ -54,19 +54,6 @@ export default function HeaderNav() {
           </Link>
 
           {/* Demo Links Start */}
-
-          <Link
-            to="/"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
-            activeProps={{
-              className:
-                'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
-            }}
-          >
-            <Globe size={20} />
-            <span className="font-medium">Home</span>
-          </Link>
 
           {/* Demo Links End */}
         </nav>

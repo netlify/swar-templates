@@ -1,6 +1,5 @@
-import Stripe from 'stripe'
 import { createServerFn } from '@tanstack/react-start'
-import motorcycles from '@/data/motorcycles'
+import products from '@/data/products'
 
 export const getStripeEnabled = createServerFn({ method: 'GET' }).handler(
   () => !!process.env.STRIPE_SECRET_KEY
@@ -9,16 +8,17 @@ export const getStripeEnabled = createServerFn({ method: 'GET' }).handler(
 export const createCheckoutSession = createServerFn({
   method: 'POST',
 })
-  .inputValidator((motorcycleId: number) => motorcycleId)
-  .handler(async ({ data: motorcycleId }) => {
+  .inputValidator((productId: number) => productId)
+  .handler(async ({ data: productId }) => {
     if (!process.env.STRIPE_SECRET_KEY) {
       throw new Error('Stripe is not configured')
     }
+    const { default: Stripe } = await import('stripe')
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-    const motorcycle = motorcycles.find((m) => m.id === motorcycleId)
-    if (!motorcycle) {
-      throw new Error('Motorcycle not found')
+    const product = products.find((p) => p.id === productId)
+    if (!product) {
+      throw new Error('Product not found')
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -28,11 +28,11 @@ export const createCheckoutSession = createServerFn({
           price_data: {
             currency: 'usd',
             product_data: {
-              name: motorcycle.name,
-              description: motorcycle.shortDescription,
-              images: [motorcycle.image],
+              name: product.name,
+              description: product.shortDescription,
+              images: [product.image],
             },
-            unit_amount: motorcycle.price * 100,
+            unit_amount: product.price * 100,
           },
           quantity: 1,
         },

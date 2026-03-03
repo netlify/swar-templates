@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { createCheckoutSession, getStripeEnabled } from '@/lib/stripe.server'
+import { createCheckoutSession, getStripeEnabled } from '@/lib/stripe'
 
 export function BuyButton({
-  motorcycleId,
+  productId,
   className = '',
 }: {
-  motorcycleId: number
+  productId: number
   className?: string
 }) {
   const [loading, setLoading] = useState(false)
@@ -18,7 +18,7 @@ export function BuyButton({
   const handleClick = async () => {
     setLoading(true)
     try {
-      const url = await createCheckoutSession({ data: motorcycleId })
+      const url = await createCheckoutSession({ data: productId })
       if (url) {
         window.location.href = url
       }

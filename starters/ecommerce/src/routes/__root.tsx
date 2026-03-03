@@ -15,7 +15,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Luna-C Motorcycles',
+        title: 'Product Company',
       },
     ],
     links: [

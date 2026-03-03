@@ -8,9 +8,9 @@ export const Route = createFileRoute('/faq')({
 
 const faqs = [
   {
-    question: 'What is Acme SaaS?',
+    question: 'What is My SaaS?',
     answer:
-      'Acme SaaS is an all-in-one platform that provides real-time analytics, automated workflows, and team collaboration tools. It helps teams ship products faster by consolidating the tools they need into a single, easy-to-use interface.',
+      'My SaaS is an all-in-one platform that provides real-time analytics, automated workflows, and team collaboration tools. It helps teams ship products faster by consolidating the tools they need into a single, easy-to-use interface.',
   },
   {
     question: 'How does the free plan work?',
@@ -25,7 +25,7 @@ const faqs = [
   {
     question: 'Is my data secure?',
     answer:
-      'Absolutely. Acme SaaS is SOC 2 Type II compliant and uses end-to-end encryption for all data in transit and at rest. We also support SSO, role-based access controls, and provide detailed audit logs for Enterprise customers.',
+      'Absolutely. My SaaS is SOC 2 Type II compliant and uses end-to-end encryption for all data in transit and at rest. We also support SSO, role-based access controls, and provide detailed audit logs for Enterprise customers.',
   },
   {
     question: 'What integrations do you support?',

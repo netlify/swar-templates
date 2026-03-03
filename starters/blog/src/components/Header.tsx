@@ -17,7 +17,7 @@ export default function Header() {
           <div className="flex flex-row items-center space-x-6">
             <div className="text-xl tracking-wide">
               <Link to="/" className="hover:text-emerald-700 transition-colors">
-                Hawaii Adventures
+                Your Blog
               </Link>
             </div>
             <div className="flex gap-6">

@@ -9,5 +9,5 @@ export const Route = createFileRoute('/')({
 })
 
 function App() {
-  return <BlogPosts title="Hawaii Adventures" posts={allPosts} />
+  return <BlogPosts title="Your Blog" posts={allPosts} />
 }

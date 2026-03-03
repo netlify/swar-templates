@@ -1,22 +1,22 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
-import motorcycles from '../../data/motorcycles'
+import products from '../../data/products'
 import { BuyButton } from '@/components/BuyButton'
 
-export const Route = createFileRoute('/motorcycles/$motorcycleId')({
+export const Route = createFileRoute('/products/$productId')({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const motorcycle = motorcycles.find(
-      (motorcycle) => motorcycle.id === +params.motorcycleId,
+    const product = products.find(
+      (product) => product.id === +params.productId,
     )
-    if (!motorcycle) {
-      throw new Error('Motorcycle not found')
+    if (!product) {
+      throw new Error('Product not found')
     }
-    return motorcycle
+    return product
   },
 })
 
 function RouteComponent() {
-  const motorcycle = Route.useLoaderData()
+  const product = Route.useLoaderData()
 
   return (
     <div className="relative min-h-[100vh] flex items-center bg-black text-white p-5">
@@ -25,28 +25,24 @@ function RouteComponent() {
           to="/"
           className="inline-block mb-4 text-emerald-400 hover:text-emerald-300"
         >
-          &larr; Back to all motorcycles
+          &larr; Back to all products
         </Link>
-        <h1 className="text-3xl font-bold mb-2">{motorcycle.name}</h1>
-        <p className="text-gray-400 mb-2">
-          {motorcycle.engineSize}cc •{' '}
-          {motorcycle.type.charAt(0).toUpperCase() + motorcycle.type.slice(1)}
-        </p>
-        <p className="text-gray-300 mb-6">{motorcycle.description}</p>
+        <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+        <p className="text-gray-300 mb-6">{product.description}</p>
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold text-emerald-400">
-            ${motorcycle.price.toLocaleString()}
+            ${product.price.toLocaleString()}
           </div>
-          <BuyButton motorcycleId={motorcycle.id} />
+          <BuyButton productId={product.id} />
         </div>
       </div>
 
       <div className="absolute top-0 right-0 w-[55%] h-full z-0">
         <div className="w-full h-full overflow-hidden rounded-2xl border-4 border-gray-800 shadow-2xl">
           <img
-            src={motorcycle.image}
-            alt={motorcycle.name}
-            className="w-full h-full object-cover motorcycle-image"
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover"
           />
         </div>
       </div>

@@ -1,20 +1,17 @@
 ---
-jobTitle: Junior Frontend Developer
-company: IniTech
+jobTitle: Job Title 1
+company: Company 1
 location: Remote
 startDate: 2021-01-01
 endDate: 2021-12-31
-summary: Junior frontend developer working on React-based web applications using modern development practices
+summary: Summary of responsibilities and achievements for this role.
 description:
 tags:
   [
-    "React",
-    "TypeScript",
-    "Frontend Development",
-    "JavaScript",
-    "TanStack",
-    "Web Development",
+    "Skill 1",
+    "Skill 2",
+    "Skill 3",
   ]
 ---
 
-Worked as a junior frontend developer at IniTech, contributing to React-based web applications. Collaborated with the development team to implement responsive user interfaces, integrate REST APIs, and maintain code quality. Gained hands-on experience with modern frontend technologies and development workflows while working on production applications.
+Description of work done in this role.

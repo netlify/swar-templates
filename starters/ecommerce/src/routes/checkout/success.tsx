@@ -11,7 +11,7 @@ function CheckoutSuccess() {
         <div className="text-emerald-400 text-6xl mb-6">&#10003;</div>
         <h1 className="text-3xl font-bold mb-4">Payment Successful!</h1>
         <p className="text-gray-300 mb-8">
-          Thank you for your purchase. Your new motorcycle is on its way!
+          Thank you for your purchase. Your order is on its way!
         </p>
         <Link
           to="/"
