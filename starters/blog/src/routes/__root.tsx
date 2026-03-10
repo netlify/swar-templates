@@ -34,9 +34,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-[#f5f1e4] min-h-screen">
+      <body className="min-h-screen">
         <Header />
-        <main className="mt-20">{children}</main>
+        <main>{children}</main>
         <Scripts />
       </body>
     </html>
