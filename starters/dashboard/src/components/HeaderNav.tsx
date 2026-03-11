@@ -18,7 +18,7 @@ export default function HeaderNav() {
         </button>
         <h1 className="ml-4 text-xl font-semibold">
           <Link to="/">
-            <span className="text-white text-xl font-bold">Dashboard</span>
+            <span className="text-white text-xl font-bold">Application Name</span>
           </Link>
         </h1>
       </header>

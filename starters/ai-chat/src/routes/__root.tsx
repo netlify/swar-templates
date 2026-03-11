@@ -13,7 +13,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Weather Chat',
+        title: 'Application Name',
       },
     ],
     links: [
@@ -34,7 +34,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <header className="p-4 flex items-center justify-between bg-gray-800 text-white shadow-lg">
-          <h1 className="text-xl font-semibold">Weather Chat</h1>
+          <h1 className="text-xl font-semibold">Application Name</h1>
         </header>
         {children}
         <Scripts />

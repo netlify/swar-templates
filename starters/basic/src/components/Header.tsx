@@ -10,7 +10,7 @@ export default function Header({ children }: HeaderProps) {
     <header className="p-4 flex items-center justify-between bg-gray-800 text-white shadow-lg">
       <nav className="flex items-center gap-4">{children ?? <HeaderNav />}</nav>
       <Link to="/" className="text-xl font-semibold">
-        My App
+        Application Name
       </Link>
     </header>
   )

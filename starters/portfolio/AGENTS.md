@@ -156,3 +156,16 @@ Developer portfolio with Content Collections (jobs, education, blog, projects) a
 ## Environment Variables
 
 For AI: ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, or OLLAMA_BASE_URL (same as ai add-on).
+
+## Application Name
+
+This starter uses "Application Name" as a placeholder throughout the UI and metadata. Replace it with the user's desired application name in the following locations:
+
+### UI Components
+- `src/components/Header.tsx` — app name displayed in the header
+- `src/components/HeaderNav.tsx` — app name in the mobile navigation header
+
+### SEO Metadata
+- `src/routes/__root.tsx` — the `title` field in the `head()` configuration
+
+Search for all occurrences of "Application Name" in the `src/` directory and replace with the user's application name.

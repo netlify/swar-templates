@@ -15,7 +15,7 @@ export default function Header() {
               to="/"
               className="hover:text-orange-400 transition-colors flex flex-row items-center"
             >
-              <span className="text-2xl font-bold">Product Company</span>
+              <span className="text-2xl font-bold">Application Name</span>
             </Link>
           </div>
         </nav>

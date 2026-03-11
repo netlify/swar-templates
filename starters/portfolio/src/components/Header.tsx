@@ -11,7 +11,7 @@ export default function Header({ children }: HeaderProps) {
       <nav className="flex items-center gap-4">{children ?? <HeaderNav />}</nav>
       <div className="flex items-center gap-4">
         <Link to="/" className="text-xl font-semibold">
-          Portfolio
+          Application Name
         </Link>
       </div>
     </header>

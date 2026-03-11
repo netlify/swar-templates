@@ -10,7 +10,7 @@ export default function Header() {
   return (
     <header className="border-b px-4 py-3 flex items-center gap-6">
       <Link to="/" className="font-semibold">
-        Your Blog
+        Application Name
       </Link>
       <nav className="flex gap-4 text-sm">
         {categories.map((category) => (
