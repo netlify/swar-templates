@@ -1,10 +1,6 @@
 ---
 name: content-collections
 description: Use content-collections for type-safe content management with markdown files. Use when building blogs, documentation sites, or any content-driven pages with frontmatter and markdown.
-license: Apache-2.0
-metadata:
-  author: sdorra
-  version: "1.0"
 ---
 
 # Content Collections
