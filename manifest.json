@@ -12,14 +12,14 @@
     {
       "id": "basic",
       "name": "Basic",
-      "description": "A basic starter kit for building web applications with TanStack Start and React.",
+      "description": "A basic starter kit for building web applications with TanStack Start and React. Use template if no other templates are a close match.",
       "features": ["tanstack-start", "react"],
       "framework": "tanstack-start-react"
     },
     {
       "id": "ai-chat",
       "name": "AI Chat",
-      "description": "A weather chat assistant powered by TanStack AI with multi-provider support for Netlify.",
+      "description": "A weather chat assistant powered by TanStack AI with multi-provider support. Use this when the customer wants an AI chat application.",
       "type": "example",
       "features": ["tanstack-start", "tanstack-ai"],
       "framework": "tanstack-start-react"
@@ -27,7 +27,7 @@
     {
       "id": "blog",
       "name": "Blog",
-      "description": "A Hawaii adventures travel blog built with content-collections and TanStack Start for Netlify.",
+      "description": "A travel blog built with content-collections and TanStack Start. Use this when the customer wants a content-driven blog or editorial site.",
       "type": "example",
       "features": ["tanstack-start", "content-collections"],
       "framework": "tanstack-start-react"
@@ -35,7 +35,7 @@
     {
       "id": "calculator",
       "name": "Calculator",
-      "description": "A sleek iOS-style calculator built with TanStack Start and Tailwind CSS for Netlify.",
+      "description": "A template for building single page calculators. Use this when the customer wants to create a calculator style application.",
       "type": "example",
       "features": ["tanstack-start"],
       "framework": "tanstack-start-react"
@@ -43,7 +43,7 @@
     {
       "id": "dashboard",
       "name": "Dashboard",
-      "description": "An analytics dashboard with charts built with Chart.js, TanStack Start, and Tailwind CSS for Netlify.",
+      "description": "An analytics dashboard with charts built with Chart.js and Tailwind CSS. Use this when the customer wants a dashboard or data visualization app.",
       "type": "example",
       "features": ["tanstack-start", "chart.js"],
       "framework": "tanstack-start-react"
@@ -51,7 +51,7 @@
     {
       "id": "ecommerce",
       "name": "Ecommerce",
-      "description": "A motorcycle ecommerce site with Stripe checkout built with TanStack Start for Netlify.",
+      "description": "An ecommerce site with Stripe checkout built with TanStack Start. Use this when the customer wants an online store or product catalog with payments.",
       "type": "example",
       "features": ["tanstack-start", "stripe"],
       "framework": "tanstack-start-react"
@@ -59,7 +59,7 @@
     {
       "id": "marketing",
       "name": "Marketing",
-      "description": "A motorcycle marketing site built with TanStack Start for Netlify.",
+      "description": "A marketing site built with TanStack Start. Use this when the customer wants a marketing or promotional landing page.",
       "type": "example",
       "features": ["tanstack-start"],
       "framework": "tanstack-start-react"
@@ -67,7 +67,7 @@
     {
       "id": "portfolio",
       "name": "Portfolio",
-      "description": "A developer portfolio with resume, blog, projects, and contact form built with content-collections and TanStack Start for Netlify.",
+      "description": "A developer portfolio with resume, blog, projects, and contact form built with content-collections. Use this when the customer wants a personal or professional portfolio site.",
       "type": "example",
       "features": ["tanstack-start", "content-collections", "netlify-forms"],
       "framework": "tanstack-start-react"
@@ -75,7 +75,7 @@
     {
       "id": "resume",
       "name": "Resume",
-      "description": "Professional resume template with content-collections and shadcn UI components for Netlify.",
+      "description": "Professional resume template with content-collections and shadcn UI components. Use this when the customer wants a resume or CV site.",
       "type": "example",
       "features": ["tanstack-start", "content-collections"],
       "framework": "tanstack-start-react"
@@ -83,7 +83,7 @@
     {
       "id": "saas",
       "name": "SaaS",
-      "description": "A SaaS landing page with pricing, features, and FAQ built with TanStack Start and Tailwind CSS for Netlify.",
+      "description": "A SaaS landing page with pricing, features, and FAQ built with TanStack Start and Tailwind CSS. Use this when the customer wants a SaaS or product landing page.",
       "type": "example",
       "features": ["tanstack-start"],
       "framework": "tanstack-start-react"
@@ -91,7 +91,7 @@
     {
       "id": "survey",
       "name": "Survey",
-      "description": "A movie survey form using Netlify Forms with TanStack Start for Netlify.",
+      "description": "A survey form using Netlify Forms with TanStack Start. Use this when the customer wants a survey, form, or data-collection application.",
       "type": "example",
       "features": ["tanstack-start", "netlify-forms"],
       "framework": "tanstack-start-react"
