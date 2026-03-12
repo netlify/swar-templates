@@ -1,6 +1,5 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 
-import Header from '@/components/Header'
 
 import '../styles.css'
 
@@ -28,8 +27,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-black">
-        <Header />
+      <body>
         {children}
         <Scripts />
       </body>

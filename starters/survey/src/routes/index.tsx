@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({
 
 function Home() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-teal-900 via-emerald-800 to-cyan-900 flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <SurveyForm />
     </div>
   )

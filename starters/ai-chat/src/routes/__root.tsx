@@ -27,9 +27,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <header className="p-4 flex items-center justify-between bg-gray-800 text-white shadow-lg">
-          <h1 className="text-xl font-semibold">Application Name</h1>
-        </header>
         {children}
         <Scripts />
       </body>

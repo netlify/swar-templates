@@ -32,7 +32,7 @@ export function BuyButton({
     return (
       <button
         disabled
-        className={`bg-gray-400 cursor-not-allowed text-white px-6 py-2 rounded-lg ${className}`}
+        className={`px-6 py-2 rounded-lg border ${className}`}
         title="Checkout is not available"
       >
         Checkout Unavailable
@@ -44,7 +44,7 @@ export function BuyButton({
     <button
       onClick={handleClick}
       disabled={loading || stripeEnabled === null}
-      className={`bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 disabled:cursor-wait text-white px-6 py-2 rounded-lg transition-colors ${className}`}
+      className={`px-6 py-2 rounded-lg border disabled:cursor-wait ${className}`}
     >
       {loading ? 'Processing...' : 'Buy Now'}
     </button>

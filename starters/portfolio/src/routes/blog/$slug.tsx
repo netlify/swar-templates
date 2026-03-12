@@ -14,7 +14,7 @@ function BlogPost() {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Post not found
@@ -30,7 +30,7 @@ function BlogPost() {
   const html = marked(post.content)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <Link
           to="/"

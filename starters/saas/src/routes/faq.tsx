@@ -46,12 +46,12 @@ const faqs = [
 
 function FAQ() {
   return (
-    <div className="min-h-screen bg-gray-950 text-white py-20 px-4">
+    <div className="min-h-screen py-20 px-4">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
           Frequently Asked Questions
         </h1>
-        <p className="text-gray-400 text-center mb-14 max-w-xl mx-auto">
+        <p className="text-center mb-14 max-w-xl mx-auto">
           Got questions? We've got answers. If you can't find what you're
           looking for, reach out to our support team.
         </p>
@@ -69,19 +69,19 @@ function Accordion({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="border border-white/10 rounded-lg overflow-hidden">
+    <div className="border rounded-lg overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 text-left hover:bg-white/5 transition-colors"
+        className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors"
       >
         <span className="font-medium text-lg">{question}</span>
         <ChevronDown
           size={20}
-          className={`text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`transition-transform ${open ? 'rotate-180' : ''}`}
         />
       </button>
       {open && (
-        <div className="px-5 pb-5 text-gray-400 leading-relaxed">{answer}</div>
+        <div className="px-5 pb-5 leading-relaxed">{answer}</div>
       )}
     </div>
   )

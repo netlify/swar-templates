@@ -171,15 +171,15 @@ export default function Calculator() {
   const isActive = (op: string) => state.operation === op && state.overwrite
 
   return (
-    <div className="w-full max-w-sm mx-auto bg-gray-900 rounded-2xl shadow-2xl overflow-hidden">
+    <div className="w-full max-w-sm mx-auto border rounded-2xl overflow-hidden">
       {/* Display */}
-      <div className="p-6 pb-4">
-        <div className="text-right min-h-[24px] text-gray-400 text-sm mb-1">
+      <div className="p-6 pb-4 border-b">
+        <div className="text-right min-h-[24px] text-sm mb-1">
           {state.previousValue != null && state.operation
             ? `${formatDisplay(state.previousValue)} ${state.operation}`
             : '\u00A0'}
         </div>
-        <div className="text-right text-white text-5xl font-light tracking-tight overflow-hidden">
+        <div className="text-right text-5xl font-light tracking-tight overflow-hidden">
           {formatDisplay(state.display)}
         </div>
       </div>
@@ -189,29 +189,25 @@ export default function Calculator() {
         {/* Row 1: C, +/-, %, / */}
         <button
           onClick={() => dispatch({ type: 'CLEAR' })}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-500 hover:bg-gray-400 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           C
         </button>
         <button
           onClick={() => dispatch({ type: 'TOGGLE_SIGN' })}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-500 hover:bg-gray-400 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           +/-
         </button>
         <button
           onClick={() => dispatch({ type: 'PERCENT' })}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-500 hover:bg-gray-400 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           %
         </button>
         <button
           onClick={() => chooseOperation('/')}
-          className={`h-16 rounded-xl text-lg font-medium transition-colors ${
-            isActive('/')
-              ? 'bg-white text-orange-500 ring-2 ring-orange-400'
-              : 'bg-orange-500 hover:bg-orange-400 text-white'
-          }`}
+          className={`h-16 rounded-xl text-lg font-medium border ${isActive('/') ? 'font-bold' : ''}`}
         >
           ÷
         </button>
@@ -219,29 +215,25 @@ export default function Calculator() {
         {/* Row 2: 7, 8, 9, * */}
         <button
           onClick={() => addDigit('7')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           7
         </button>
         <button
           onClick={() => addDigit('8')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           8
         </button>
         <button
           onClick={() => addDigit('9')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           9
         </button>
         <button
           onClick={() => chooseOperation('*')}
-          className={`h-16 rounded-xl text-lg font-medium transition-colors ${
-            isActive('*')
-              ? 'bg-white text-orange-500 ring-2 ring-orange-400'
-              : 'bg-orange-500 hover:bg-orange-400 text-white'
-          }`}
+          className={`h-16 rounded-xl text-lg font-medium border ${isActive('*') ? 'font-bold' : ''}`}
         >
           ×
         </button>
@@ -249,29 +241,25 @@ export default function Calculator() {
         {/* Row 3: 4, 5, 6, - */}
         <button
           onClick={() => addDigit('4')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           4
         </button>
         <button
           onClick={() => addDigit('5')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           5
         </button>
         <button
           onClick={() => addDigit('6')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           6
         </button>
         <button
           onClick={() => chooseOperation('-')}
-          className={`h-16 rounded-xl text-lg font-medium transition-colors ${
-            isActive('-')
-              ? 'bg-white text-orange-500 ring-2 ring-orange-400'
-              : 'bg-orange-500 hover:bg-orange-400 text-white'
-          }`}
+          className={`h-16 rounded-xl text-lg font-medium border ${isActive('-') ? 'font-bold' : ''}`}
         >
           −
         </button>
@@ -279,29 +267,25 @@ export default function Calculator() {
         {/* Row 4: 1, 2, 3, + */}
         <button
           onClick={() => addDigit('1')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           1
         </button>
         <button
           onClick={() => addDigit('2')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           2
         </button>
         <button
           onClick={() => addDigit('3')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           3
         </button>
         <button
           onClick={() => chooseOperation('+')}
-          className={`h-16 rounded-xl text-lg font-medium transition-colors ${
-            isActive('+')
-              ? 'bg-white text-orange-500 ring-2 ring-orange-400'
-              : 'bg-orange-500 hover:bg-orange-400 text-white'
-          }`}
+          className={`h-16 rounded-xl text-lg font-medium border ${isActive('+') ? 'font-bold' : ''}`}
         >
           +
         </button>
@@ -309,19 +293,19 @@ export default function Calculator() {
         {/* Row 5: 0 (span 2), ., = */}
         <button
           onClick={() => addDigit('0')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors col-span-2"
+          className="h-16 rounded-xl text-lg font-medium border col-span-2"
         >
           0
         </button>
         <button
           onClick={() => addDigit('.')}
-          className="h-16 rounded-xl text-lg font-medium bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           .
         </button>
         <button
           onClick={() => dispatch({ type: 'EVALUATE' })}
-          className="h-16 rounded-xl text-lg font-medium bg-orange-500 hover:bg-orange-400 text-white transition-colors"
+          className="h-16 rounded-xl text-lg font-medium border"
         >
           =
         </button>

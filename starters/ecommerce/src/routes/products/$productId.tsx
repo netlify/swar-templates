@@ -19,31 +19,26 @@ function RouteComponent() {
   const product = Route.useLoaderData()
 
   return (
-    <div className="relative min-h-[100vh] flex items-center bg-black text-white p-5">
-      <div className="relative z-10 w-[60%] bg-gray-900/60 backdrop-blur-md rounded-2xl p-8 border border-gray-800/50 shadow-xl">
-        <Link
-          to="/"
-          className="inline-block mb-4 text-emerald-400 hover:text-emerald-300"
-        >
+    <div className="flex flex-col md:flex-row gap-8 p-5">
+      <div className="w-full md:w-[55%]">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full rounded-2xl object-cover"
+        />
+      </div>
+
+      <div className="w-full md:w-[45%] p-8">
+        <Link to="/" className="inline-block mb-4">
           &larr; Back to all products
         </Link>
         <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
-        <p className="text-gray-300 mb-6">{product.description}</p>
+        <p className="mb-6">{product.description}</p>
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold text-emerald-400">
+          <div className="text-2xl font-bold">
             ${product.price.toLocaleString()}
           </div>
           <BuyButton productId={product.id} />
-        </div>
-      </div>
-
-      <div className="absolute top-0 right-0 w-[55%] h-full z-0">
-        <div className="w-full h-full overflow-hidden rounded-2xl border-4 border-gray-800 shadow-2xl">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ function Contact() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Mail className="w-8 h-8 text-green-600" />
@@ -34,7 +34,7 @@ function Contact() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-2xl mx-auto px-4 py-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">Contact</h1>
         <p className="text-gray-600 mb-8">
