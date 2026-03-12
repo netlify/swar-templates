@@ -24,7 +24,9 @@ The `nf_jwt` cookie is the bridge between client and server. During SSR or serve
 Before starting, ensure:
 
 1. The TanStack Start project deploys to Netlify (using `@netlify/vite-plugin-tanstack-start`)
-2. Netlify Identity is enabled in the Netlify dashboard (Site configuration > Identity)
+2. Identity is automatically enabled when the deploy includes Identity code. Default settings:
+   - **Registration** - Open (anyone can sign up). Change to Invite only in **Project configuration > Identity** if needed.
+   - **Autoconfirm** - Off (new signups require email confirmation). Enable in **Project configuration > Identity** to skip confirmation during development.
 3. The app is deployed to a Netlify staging or production environment (authentication cannot be tested on localhost)
 
 ## Step-by-step integration
