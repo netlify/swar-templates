@@ -26,28 +26,27 @@ An interactive resume/portfolio application with an AI-powered assistant. Built 
 ├── public
 │   ├── favicon.ico
 │   ├── logo.png
-│   ├── motorcycle-scooter.jpg
 │   ├── tanstack-circle-logo.png
 │   └── tanstack-word-logo-white.svg  # TanStack wordmark logo (white) used in header/nav.
 ├── src
 │   ├── components
 │   │   ├── Header.tsx  # Header.
 │   │   ├── HeaderNav.tsx  # Navigation sidebar template: mobile menu, Home link, add-on routes; EJS-driven for dynamic route generation.
-│   │   ├── MotorcycleAIAssistant.tsx  # AI marketing assistant.
-│   │   └── MotorcycleRecommendation.tsx  # Motorcycle recommendation card.
+│   │   ├── ProductAIAssistant.tsx  # AI marketing assistant.
+│   │   └── ProductRecommendation.tsx  # Product recommendation card.
 │   ├── data
-│   │   └── motorcycles.ts  # Motorcycle catalog data template.
+│   │   └── products.ts  # Product catalog data template.
 │   ├── lib
-│   │   ├── motorcycle-ai-hook.ts  # useMotorcycleChat hook.
-│   │   └── motorcycle-tools.ts  # AI tools: getMotorcycles, recommendMotorcycle.
+│   │   ├── product-ai-hook.ts  # useProductChat hook.
+│   │   └── product-tools.ts  # AI tools: getProducts, recommendProduct.
 │   ├── routes
-│   │   ├── motorcycles
-│   │   │   └── $motorcycleId.tsx  # Motorcycle detail page with recommendation.
+│   │   ├── products
+│   │   │   └── $productId.tsx  # Product detail page with recommendation.
 │   │   ├── __root.tsx  # Root layout: Header, styles.
-│   │   ├── api.motorcycle-chat.ts  # POST handler for motorcycle AI chat.
-│   │   └── index.tsx  # Marketing home: motorcycle showcase, MotorcycleAIAssistant.
+│   │   ├── api.product-chat.ts  # POST handler for product AI chat.
+│   │   └── index.tsx  # Marketing home with ProductAIAssistant.
 │   ├── store
-│   │   └── motorcycle-assistant.ts  # Zustand store for assistant state.
+│   │   └── product-assistant.ts  # Zustand store for assistant state.
 │   ├── router.tsx  # TanStack Router setup: creates router from generated routeTree with scroll restoration.
 │   └── styles.css  # Global styles.
 ├── .gitignore  # Template for .gitignore: node_modules, dist, .env, .netlify, .tanstack, etc.
@@ -119,13 +118,13 @@ npm run preview  # Preview production build
 - Zustand if you need it for global state
 ### Marketing Site with AI Assistant
 
-Motorcycle marketing site with TanStack AI chat assistant. No Stripe checkout.
+Marketing site with TanStack AI chat assistant. No Stripe checkout.
 
 **AI tools available:**
-- `getMotorcycles` - Get all motorcycles from catalog
-- `recommendMotorcycle` - Display motorcycle recommendation card (MUST use for recommendations)
+- `getProducts` - Get all products from catalog
+- `recommendProduct` - Display product recommendation card (MUST use for recommendations)
 
-**Components:** MotorcycleAIAssistant, MotorcycleRecommendation
+**Components:** ProductAIAssistant, ProductRecommendation
 
 **Dependencies:** @tanstack/ai, streamdown
 

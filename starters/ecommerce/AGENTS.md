@@ -26,7 +26,6 @@ An interactive resume/portfolio application with an AI-powered assistant. Built 
 ├── public
 │   ├── favicon.ico
 │   ├── logo.png
-│   ├── motorcycle-scooter.jpg
 │   ├── tanstack-circle-logo.png
 │   └── tanstack-word-logo-white.svg  # TanStack wordmark logo (white) used in header/nav.
 ├── src
@@ -34,25 +33,25 @@ An interactive resume/portfolio application with an AI-powered assistant. Built 
 │   │   ├── BuyButton.tsx  # Stripe checkout button component.
 │   │   ├── Header.tsx  # Header with nav.
 │   │   ├── HeaderNav.tsx  # Navigation sidebar template: mobile menu, Home link, add-on routes; EJS-driven for dynamic route generation.
-│   │   ├── MotorcycleAIAssistant.tsx  # AI shopping assistant component.
-│   │   └── MotorcycleRecommendation.tsx  # Motorcycle recommendation card display.
+│   │   ├── ProductAIAssistant.tsx  # AI shopping assistant component.
+│   │   └── ProductRecommendation.tsx  # Product recommendation card display.
 │   ├── data
-│   │   └── motorcycles.ts  # Motorcycle catalog data.
+│   │   └── products.ts  # Product catalog data.
 │   ├── lib
-│   │   ├── motorcycle-ai-hook.ts  # useMotorcycleChat hook for /api/motorcycle-chat.
-│   │   ├── motorcycle-tools.ts  # AI tools: getMotorcycles, recommendMotorcycle.
+│   │   ├── product-ai-hook.ts  # useProductChat hook for /api/product-chat.
+│   │   ├── product-tools.ts  # AI tools: getProducts, recommendProduct.
 │   │   └── stripe.server.ts  # Stripe server utilities for checkout.
 │   ├── routes
 │   │   ├── checkout
 │   │   │   ├── cancel.tsx  # Stripe checkout cancel page.
 │   │   │   └── success.tsx  # Stripe checkout success page.
-│   │   ├── motorcycles
-│   │   │   └── $motorcycleId.tsx  # Motorcycle detail page with BuyButton, recommendation.
+│   │   ├── products
+│   │   │   └── $productId.tsx  # Product detail page with BuyButton, recommendation.
 │   │   ├── __root.tsx  # Root layout: Header, styles.
-│   │   ├── api.motorcycle-chat.ts  # POST handler for motorcycle AI chat with getMotorcycles, recommendMotorcycle tools.
-│   │   └── index.tsx  # Motorcycle catalog home with MotorcycleAIAssistant.
+│   │   ├── api.product-chat.ts  # POST handler for product AI chat.
+│   │   └── index.tsx  # Product catalog home with ProductAIAssistant.
 │   ├── store
-│   │   └── motorcycle-assistant.ts  # Zustand store for assistant open state.
+│   │   └── product-assistant.ts  # Zustand store for assistant open state.
 │   ├── router.tsx  # TanStack Router setup: creates router from generated routeTree with scroll restoration.
 │   └── styles.css  # Global styles: Tailwind, prose.
 ├── .gitignore  # Template for .gitignore: node_modules, dist, .env, .netlify, .tanstack, etc.
@@ -124,7 +123,7 @@ npm run preview  # Preview production build
 - Zustand if you need it for global state
 ### Ecommerce Integration
 
-Motorcycle ecommerce site with Stripe checkout and AI shopping assistant.
+Ecommerce site with Stripe checkout and AI shopping assistant.
 
 **Stripe checkout:**
 - `createCheckoutSession` server function in `src/lib/stripe.server.ts`
@@ -132,8 +131,8 @@ Motorcycle ecommerce site with Stripe checkout and AI shopping assistant.
 - Routes: `/checkout/success`, `/checkout/cancel`
 
 **AI tools available:**
-- `getMotorcycles` - Get all motorcycles from catalog
-- `recommendMotorcycle` - Display motorcycle recommendation card (MUST use for recommendations; do not write recommendations manually)
+- `getProducts` - Get all products from catalog
+- `recommendProduct` - Display product recommendation card (MUST use for recommendations; do not write recommendations manually)
 
 **Dependencies:** stripe, @tanstack/ai, streamdown
 
