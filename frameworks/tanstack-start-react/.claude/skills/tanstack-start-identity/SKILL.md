@@ -5,17 +5,13 @@ description: Upgrade a stock TanStack Start project to use Netlify Identity for 
 
 # Netlify Identity + TanStack Start Integration
 
-This skill walks through upgrading a stock TanStack Start project to use Netlify Identity for authentication across every integration surface: SSR pages, SPA pages, API routes, server functions, middleware, route guards, role-based access control, identity event webhooks, and client-side auth state management.
-
-## Important context
-
-Netlify Identity was deprecated on February 28, 2025. It still works and receives critical security patches, but no new features or bug fixes. Before proceeding, inform the user of this and suggest they consider Auth0 (via the Netlify Auth0 extension) or Supabase Auth for new projects. If they want to proceed with Netlify Identity anyway (e.g., existing project, prototyping, or migrating later), continue with the integration.
+This skill extends the base Netlify Identity skill with TanStack Start-specific integration patterns. It covers upgrading a stock TanStack Start project to use Netlify Identity for authentication across every integration surface: SSR pages, SPA pages, API routes, server functions, middleware, route guards, role-based access control, identity event webhooks, and client-side auth state management. For general Netlify Identity concepts, error handling, and API reference, refer to the base Netlify Identity skill.
 
 > ⚠️ **This integration does NOT work on localhost.** Netlify Identity requires the `nf_jwt` cookie to be set by a real Netlify deployment. Running `netlify dev` does NOT provide a working Identity service locally — it only proxies your site, not the GoTrue identity backend. Authentication only functions when the app is deployed to a Netlify staging or production environment. For testing, deploy a branch preview or a staging site.
 
 ## Architecture overview
 
-This integration uses a single package: **`@netlify/identity`** (v0.4.1). It works on both client and server and abstracts all JWT extraction, cookie handling, and GoTrue API validation behind simple `getUser()` / `login()` / `logout()` calls.
+This integration uses a single package: **`@netlify/identity`**. It works on both client and server and abstracts all JWT extraction, cookie handling, and GoTrue API validation behind simple `getUser()` / `login()` / `logout()` calls.
 
 The `nf_jwt` cookie is the bridge between client and server. During SSR or server function calls, the browser sends this cookie automatically on same-origin requests. `@netlify/identity`'s `getUser()` reads and validates this cookie automatically — no manual token extraction or external API calls required.
 
