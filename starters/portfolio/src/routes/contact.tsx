@@ -58,7 +58,6 @@ function Contact() {
               ).toString(),
             })
               .then(() => setSubmitted(true))
-              .catch(() => setSubmitted(true))
           }}
           className="space-y-6"
         >
