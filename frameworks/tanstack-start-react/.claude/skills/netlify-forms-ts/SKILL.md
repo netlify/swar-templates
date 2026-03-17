@@ -15,7 +15,7 @@ metadata:
 
 ## The Problem: Netlify Can't Detect React-Rendered Forms
 
-TanStack Start renders pages via React on the client side. Netlify's build-time form detection works by scanning the **static HTML output** of your build. Because TanStack Start's forms live inside React components, Netlify never sees them during the build — so the form is never registered and submissions will return 404.
+TanStack Start renders pages via React on the client side. Netlify's build-time form detection works by scanning the **static HTML output** of your build. Because TanStack Start's forms live inside React components, Netlify never sees them during the build — so the form is never registered and submissions will silently fail. Without build-time detection, POSTs containing form data pass through to the SSR function instead of being intercepted by Netlify's form processing.
 
 ---
 
@@ -112,8 +112,9 @@ export function ContactForm() {
 
 ## Checklist
 
-- [ ] `public/contact-form.html` exists with a `netlify` attribute and all field names
-- [ ] React component has `<input type="hidden" name="form-name" value="contact" />`
+- [ ] **Static HTML skeleton exists** in `public/` (e.g. `public/__forms.html`) with `data-netlify="true"` and all field names — this is the most critical step
+- [ ] Form `name` in the static HTML exactly matches `form-name` value in the React component
+- [ ] Every field in the React form is also in the static HTML skeleton
+- [ ] React component has `<input type="hidden" name="form-name" value="..." />`
 - [ ] `fetch` posts to `'/'` with `Content-Type: application/x-www-form-urlencoded`
-- [ ] Form `name` in `public/` HTML matches `form-name` value in the React component
 - [ ] Deployed to Netlify (forms don't work in local dev — test on a deploy preview)
