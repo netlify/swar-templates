@@ -34,7 +34,7 @@ export default function SurveyForm() {
         onSubmit={(e) => {
           e.preventDefault()
           const form = e.currentTarget
-          fetch('/', {
+          fetch('/form-survey.html', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(new FormData(form) as never).toString(),

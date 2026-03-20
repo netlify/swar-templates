@@ -70,7 +70,7 @@ export function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await fetch('/', {
+    await fetch('/contact-form.html', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({ 'form-name': 'contact', ...fields }),
@@ -108,6 +108,8 @@ export function ContactForm() {
 - `e.preventDefault()` prevents full-page navigation.
 - The `fetch` body uses URL-encoded encoding, not JSON — Netlify Forms requires this format.
 
+> **SSR interception warning:** In TanStack Start (and other SSR frameworks), `fetch('/')` will be intercepted by the SSR catch-all function and never reach Netlify's form processing middleware. The `fetch` URL **must** point to the static skeleton file path (e.g. `/contact-form.html`), not `/`. This ensures the request routes through the CDN origin where Netlify's `formsHandler` can process it.
+
 ---
 
 ## Checklist
@@ -116,5 +118,5 @@ export function ContactForm() {
 - [ ] Form `name` in the static HTML exactly matches `form-name` value in the React component
 - [ ] Every field in the React form is also in the static HTML skeleton
 - [ ] React component has `<input type="hidden" name="form-name" value="..." />`
-- [ ] `fetch` posts to `'/'` with `Content-Type: application/x-www-form-urlencoded`
+- [ ] `fetch` posts to the static skeleton file path (NOT `/`) with `Content-Type: application/x-www-form-urlencoded`
 - [ ] Deployed to Netlify (forms don't work in local dev — test on a deploy preview)
