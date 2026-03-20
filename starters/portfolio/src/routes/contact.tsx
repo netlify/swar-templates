@@ -50,7 +50,7 @@ function Contact() {
             e.preventDefault()
             const form = e.currentTarget
             const formData = new FormData(form)
-            fetch('/', {
+            fetch('/contact.html', {
               method: 'POST',
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: new URLSearchParams(
