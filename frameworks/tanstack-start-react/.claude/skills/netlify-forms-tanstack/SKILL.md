@@ -1,5 +1,5 @@
 ---
-name: netlify-forms-ts
+name: netlify-forms-tanstack
 description: Handle Netlify Forms in TanStack Start. Use when implementing contact forms, signup forms, or any form submission handling on Netlify-hosted TanStack Start sites.
 license: Apache-2.0
 metadata:
