@@ -1,6 +1,6 @@
 ---
 name: tanstack-ai-code-mode-ui
-description: Architect a code mode setup where UI generation is driven by the LLM through injected UI bindings. Use when designing a system where the model builds interfaces (dashboards, forms, visualizations, canvases, etc.) by calling UI functions from inside the sandbox, rather than returning structured UI payloads as tool results.
+description: Architect a code mode setup where UI generation is driven by the LLM through injected UI bindings. Use only when the customer specifically requests "code mode" in relation to how the AI operates AND wants the model to build interfaces (dashboards, forms, visualizations, canvases, etc.) by calling UI functions from inside the sandbox, rather than returning structured UI payloads as tool results.
 ---
 
 # Generating UI from Code Mode

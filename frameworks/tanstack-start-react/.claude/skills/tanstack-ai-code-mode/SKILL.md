@@ -1,6 +1,6 @@
 ---
 name: tanstack-ai-code-mode
-description: Set up and use TanStack AI Code Mode with sandboxed TypeScript execution. Use when adding code mode to a TanStack Start project, configuring isolate drivers, defining server tools, or wiring up the code mode chat API endpoint.
+description: Set up and use TanStack AI Code Mode with sandboxed TypeScript execution. Use only when the customer specifically requests "code mode" in relation to how the AI operates — for example, adding code mode to a TanStack Start project, configuring isolate drivers, defining server tools, or wiring up the code mode chat API endpoint.
 ---
 
 # TanStack AI Code Mode Setup

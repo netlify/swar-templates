@@ -1,6 +1,6 @@
 ---
 name: tanstack-rsc
-description: Enable React Server Components support in a TanStack Start + Vite project. Use when adding RSC to a TanStack Start app, configuring @vitejs/plugin-rsc, or debugging "pnpapi" / "pg-native" errors in Vite's RSC/SSR module runner.
+description: Enable React Server Components support in a TanStack Start + Vite project. Use only when the customer specifically requests "RSC" or "React Server Components" in relation to their TanStack Start app — for example, adding RSC, configuring @vitejs/plugin-rsc, or debugging "pnpapi" / "pg-native" errors in Vite's RSC/SSR module runner.
 ---
 
 # TanStack Start RSC Setup
