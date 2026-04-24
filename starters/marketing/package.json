@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
-    "@tanstack/react-router": "^1.168.22",
-    "@tanstack/react-start": "^1.167.41",
-    "@tanstack/router-plugin": "^1.167.22",
+    "@tanstack/react-router": "1.168.22",
+    "@tanstack/react-start": "1.167.41",
+    "@tanstack/router-plugin": "1.167.22",
     "highlight.js": "^11.11.1",
     "lucide-react": "^0.576.0",
     "react": "^19.2.0",
@@ -20,7 +20,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@netlify/vite-plugin-tanstack-start": "^1.2.14",
+    "@netlify/vite-plugin-tanstack-start": "1.2.14",
     "@tailwindcss/vite": "^4.0.6",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
