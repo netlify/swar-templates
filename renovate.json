@@ -1,6 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>netlify/renovate-config"
+  "extends": ["github>netlify/renovate-config:esm"],
+  "ignorePresets": [":prHourlyLimit2"],
+  "semanticCommits": "enabled",
+  "dependencyDashboard": true,
+  "packageRules": [
+    {
+      "description": "TanStack versions are locked down — require manual review",
+      "matchPackageNames": ["@tanstack/**"],
+      "automerge": false
+    }
   ]
 }
