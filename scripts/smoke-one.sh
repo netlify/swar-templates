@@ -45,7 +45,7 @@ if [[ -n "${SKIP_INSTALL:-}" ]]; then
   :
 elif [[ ! -d node_modules ]]; then
   echo "  installing..."
-  npm ci --silent
+  npm install --no-package-lock --silent
 fi
 
 if [[ -z "${SKIP_BUILD:-}" ]]; then

@@ -28,7 +28,7 @@ npm run smoke
 
 **Useful env vars** for `smoke:one`:
 
-- `SKIP_INSTALL=1` — skip `npm ci` even if `node_modules` is missing
+- `SKIP_INSTALL=1` — skip `npm install --no-package-lock` even if `node_modules` is missing
 - `SKIP_BUILD=1` — skip `npm run build` (use the existing `dist/` + `.netlify/v1/functions/server.mjs`)
 - `PORT=9000` — bind the local server to a different port (default `8787`)
 
@@ -41,7 +41,7 @@ PORT=9000 npm run smoke:one -- dashboard    # if 8787 is already taken
 
 ```bash
 cd starters/basic
-npm ci && npm run build
+npm install --no-package-lock && npm run build
 node ../../scripts/smoke-serve.mjs . 8787
 # open http://127.0.0.1:8787 — Ctrl+C to stop
 ```
