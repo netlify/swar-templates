@@ -1,0 +1,73 @@
+name: Smoke test starters
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  smoke:
+    name: ${{ matrix.starter.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        starter:
+          - { id: basic,      expect: 'Hello World' }
+          - { id: ai-chat,    expect: 'Weather Chat' }
+          - { id: blog,       expect: 'Your Blog' }
+          - { id: calculator, expect: '+/-' }
+          - { id: dashboard,  expect: 'Analytics Dashboard' }
+          - { id: ecommerce,  expect: 'Product Company' }
+          - { id: marketing,  expect: 'Product Company' }
+          - { id: portfolio,  expect: 'Thoughts on web development' }
+          - { id: resume,     expect: 'My Resume' }
+          - { id: saas,       expect: 'Ship faster with' }
+          - { id: survey,     expect: 'favorite season' }
+
+    defaults:
+      run:
+        working-directory: starters/${{ matrix.starter.id }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          package-manager-cache: false
+
+      - name: Install
+        run: npm install --no-package-lock
+
+      - name: Build
+        env:
+          STRIPE_SECRET_KEY: ${{ matrix.starter.id == 'ecommerce' && 'sk_test_dummy_ci_key' || '' }}
+          SITE_URL: http://localhost:8787
+        run: npm run build
+
+      - name: Serve in background
+        run: |
+          node ${{ github.workspace }}/scripts/smoke-serve.mjs . 8787 > server.log 2>&1 &
+          echo $! > server.pid
+
+      - name: Wait for server
+        run: curl --silent --fail --retry 30 --retry-delay 1 --retry-connrefused --retry-all-errors -o /dev/null http://127.0.0.1:8787/
+
+      - name: Smoke check landing page
+        run: |
+          BODY=$(curl --silent --fail http://127.0.0.1:8787/)
+          echo "$BODY" | head -c 4000
+          echo
+          if ! grep -aqF '${{ matrix.starter.expect }}' <<< "$BODY"; then
+            echo "::error::Expected text not found: ${{ matrix.starter.expect }}"
+            exit 1
+          fi
+          echo "Found expected text: ${{ matrix.starter.expect }}"
+
+      - name: Stop server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then kill "$(cat server.pid)" 2>/dev/null || true; fi
+          [ -f server.log ] && tail -200 server.log || true
