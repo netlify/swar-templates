@@ -1,0 +1,9 @@
+{
+  "name": "swar-templates",
+  "private": true,
+  "scripts": {
+    "smoke": "bash scripts/smoke-all.sh",
+    "smoke:all": "bash scripts/smoke-all.sh",
+    "smoke:one": "bash scripts/smoke-one.sh"
+  }
+}
