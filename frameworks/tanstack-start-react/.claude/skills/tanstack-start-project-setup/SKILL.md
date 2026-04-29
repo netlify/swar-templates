@@ -406,8 +406,8 @@ export function Component() {
 ## Database Setup (Drizzle)
 
 ```bash
-npm install drizzle-orm @neondatabase/serverless
-npm install -D drizzle-kit
+npm install drizzle-orm@beta @netlify/database
+npm install -D drizzle-kit@beta
 ```
 
 ```typescript
@@ -415,23 +415,18 @@ npm install -D drizzle-kit
 import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
-  schema: './src/db/schema.ts',
-  out: './drizzle',
   dialect: 'postgresql',
-  dbCredentials: {
-    url: process.env.DATABASE_URL!,
-  },
+  schema: './db/schema.ts',
+  out: 'netlify/database/migrations',
 });
 ```
 
 ```typescript
-// src/db/index.ts
-import { drizzle } from 'drizzle-orm/neon-http';
-import { neon } from '@neondatabase/serverless';
+// db/index.ts
+import { drizzle } from 'drizzle-orm/netlify-db';
 import * as schema from './schema';
 
-const sql = neon(process.env.DATABASE_URL!);
-export const db = drizzle(sql, { schema });
+export const db = drizzle({ schema });
 ```
 
 ## Common Configurations
@@ -488,6 +483,6 @@ export const Route = createRootRoute({
 - [ ] Set up CSS solution (Tailwind recommended)
 - [ ] Create `.env` for local development
 - [ ] Configure `netlify.toml` for deployment
-- [ ] Set up database if needed (Drizzle + Neon)
+- [ ] Set up database if needed (Drizzle + Netlify Database)
 - [ ] Add ESLint configuration
 - [ ] Set environment variables in Netlify dashboard
