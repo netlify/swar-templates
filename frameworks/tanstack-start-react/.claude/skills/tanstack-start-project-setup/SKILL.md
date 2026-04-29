@@ -483,6 +483,6 @@ export const Route = createRootRoute({
 - [ ] Set up CSS solution (Tailwind recommended)
 - [ ] Create `.env` for local development
 - [ ] Configure `netlify.toml` for deployment
-- [ ] Set up database if needed (Drizzle + Neon)
+- [ ] Set up database if needed (Drizzle + Netlify Database)
 - [ ] Add ESLint configuration
 - [ ] Set environment variables in Netlify dashboard
