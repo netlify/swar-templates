@@ -4,46 +4,52 @@ Netlify starter templates for [TanStack Start](https://tanstack.com/start) + Rea
 
 ## Smoke tests
 
-Every PR runs a smoke test that builds each starter, boots its production SSR output, and verifies the home page renders expected text. Workflow: `.github/workflows/smoke-test.yml`. Shared serve wrapper: `scripts/smoke-serve.mjs`.
+Every PR runs a smoke test that builds each starter, boots its production output via `vite preview`, and verifies the home page renders expected text. Workflow: `.github/workflows/smoke-test.yml`. Tests: `scripts/smoke.test.mjs` (uses `node:test`).
 
 ### Running locally
 
-Requirements: Node 22, npm, bash.
+Requirements: Node 22+, npm.
 
-**Test one starter:**
-
-```bash
-npm run smoke:one -- basic
-```
-
-Replace `basic` with any id under `starters/` (`basic`, `ai-chat`, `blog`, `calculator`, `dashboard`, `ecommerce`, `marketing`, `portfolio`, `resume`, `saas`, `survey`).
-
-**Test every starter** (sequentially; mirrors what CI does):
+**Test every starter:**
 
 ```bash
 npm run smoke
 ```
 
-`npm run smoke` is an alias for `npm run smoke:all`. Both keep going on failure and print a pass/fail summary at the end.
-
-**Useful env vars** for `smoke:one`:
-
-- `SKIP_INSTALL=1` — skip `npm install --no-package-lock` even if `node_modules` is missing
-- `SKIP_BUILD=1` — skip `npm run build` (use the existing `dist/` + `.netlify/v1/functions/server.mjs`)
-- `PORT=9000` — bind the local server to a different port (default `8787`)
+**Test one or more specific starters** (pass ids as args):
 
 ```bash
-SKIP_BUILD=1 npm run smoke:one -- basic     # rerun the smoke check without rebuilding
-PORT=9000 npm run smoke:one -- dashboard    # if 8787 is already taken
+npm run smoke -- basic
+npm run smoke -- basic blog
 ```
 
-**Browse the built app interactively** (no smoke check, just serve and open in a browser):
+Available ids: `basic`, `ai-chat`, `blog`, `calculator`, `dashboard`, `ecommerce`, `marketing`, `portfolio`, `resume`, `saas`, `survey`.
+
+**Useful env vars:**
+
+- `SKIP_INSTALL=1` — skip `npm install --no-package-lock` in the starter even if `node_modules` is missing
+- `SKIP_BUILD=1` — skip `npm run build` (use the existing `dist/`)
+- `PORT=9000` — bind `vite preview` to a different port (default `8787`)
+
+```bash
+SKIP_BUILD=1 npm run smoke -- basic     # rerun the smoke check without rebuilding
+PORT=9000 npm run smoke -- dashboard    # if 8787 is already taken
+```
+
+**Run from scratch** (no cached install or build — closest to what CI does):
+
+```bash
+rm -rf starters/basic/node_modules starters/basic/dist
+npm run smoke -- basic
+```
+
+`SKIP_INSTALL` is checked against the presence of `node_modules`; deleting it forces a fresh `npm install --no-package-lock`. The build step always runs unless `SKIP_BUILD=1` is set, so removing `dist/` is belt-and-suspenders.
+
+**Browse a built starter interactively:**
 
 ```bash
 cd starters/basic
 npm install --no-package-lock && npm run build
-node ../../scripts/smoke-serve.mjs . 8787
-# open http://127.0.0.1:8787 — Ctrl+C to stop
+npx vite preview --host 127.0.0.1
+# open the URL printed by vite preview — Ctrl+C to stop
 ```
-
-This serves the same artifacts Netlify deploys: `dist/client/*` for static assets, with the SSR fetch handler from `.netlify/v1/functions/server.mjs` handling everything else. No Netlify CLI or login required.
