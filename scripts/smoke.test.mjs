@@ -88,9 +88,14 @@ for (const { id, expect } of selected) {
       await run('npm', ['run', 'build', '--silent'], { cwd: dir })
     }
 
+    // Spawn vite directly (not via npx) so SIGTERM hits the actual server
+    // process. With npx in the middle, the vite child gets orphaned on Linux
+    // and keeps holding the port, causing subsequent tests to fetch against
+    // the previous starter's still-running server.
+    const viteBin = join(dir, 'node_modules', '.bin', 'vite')
     const server = spawn(
-      'npx',
-      ['vite', 'preview', '--port', String(PORT), '--host', '127.0.0.1', '--strictPort'],
+      viteBin,
+      ['preview', '--port', String(PORT), '--host', '127.0.0.1', '--strictPort'],
       { cwd: dir, stdio: ['ignore', 'pipe', 'pipe'] },
     )
 
