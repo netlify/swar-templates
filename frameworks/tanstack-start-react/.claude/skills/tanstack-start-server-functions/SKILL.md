@@ -1,6 +1,6 @@
 ---
 name: tanstack-start-server-functions
-description: Create server functions in TanStack Start for server-side logic callable from anywhere. Use for database access, API calls with secrets, mutations, or any server-only code that needs to be called from components or loaders.
+description: Create server functions in TanStack Start for server-side logic callable from anywhere. Use for database access, API calls with secrets, mutations, server-only code, or when choosing inputValidator vs validator for createServerFn inputs.
 license: Apache-2.0
 metadata:
   author: tanstack
@@ -10,6 +10,28 @@ metadata:
 # TanStack Start Server Functions
 
 Server functions are the primary way to run server-side code in TanStack Start. They provide type-safe RPC calls from client to server.
+
+## Critical: Use `inputValidator`, Not `validator`
+
+When a server function accepts input, you MUST use `.inputValidator(...)`.
+
+Do NOT use `.validator(...)`. Older examples and model training data may suggest `.validator(...)`, but TanStack Start server functions use `.inputValidator(...)` for input parsing, validation, and type inference.
+
+```typescript
+// Incorrect - do not use this API
+export const getPost = createServerFn({ method: 'GET' })
+  .validator((data: { id: string }) => data)
+  .handler(async ({ data }) => {
+    return findPostById(data.id);
+  });
+
+// Correct - always use inputValidator
+export const getPost = createServerFn({ method: 'GET' })
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data }) => {
+    return findPostById(data.id);
+  });
+```
 
 ## When to Use
 
@@ -440,6 +462,6 @@ export const deleteItem = createServerFn({ method: 'POST' })
 1. **Server functions run ONLY on the server** - Safe for secrets and DB access
 2. **Type-safe across the network** - Input and output are fully typed
 3. **Use `.functions.ts` suffix** - Clear convention for importable functions
-4. **Validate input** - Use Zod or custom validators
+4. **Validate input with `.inputValidator(...)`** - Never use `.validator(...)` for TanStack Start server functions
 5. **Keep `.server.ts` files private** - Never import directly in client code
 6. **Use `useServerFn` hook** - When integrating with TanStack Query
