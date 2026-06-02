@@ -15,7 +15,7 @@
     "@tanstack/ai-ollama": "0.6.5",
     "@tanstack/ai-openai": "0.7.4",
     "@tanstack/ai-react": "0.7.10",
-    "@tanstack/react-devtools": "0.10.2",
+    "@tanstack/react-devtools": "0.10.5",
     "@tanstack/react-router": "1.168.22",
     "@tanstack/react-router-devtools": "1.166.13",
     "@tanstack/react-start": "1.167.41",
