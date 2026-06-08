@@ -12,7 +12,7 @@
     "@tanstack/ai-anthropic": "0.7.3",
     "@tanstack/ai-client": "0.7.9",
     "@tanstack/ai-gemini": "0.8.7",
-    "@tanstack/ai-ollama": "0.6.5",
+    "@tanstack/ai-ollama": "0.8.1",
     "@tanstack/ai-openai": "0.7.4",
     "@tanstack/ai-react": "0.7.10",
     "@tanstack/react-devtools": "0.10.2",
