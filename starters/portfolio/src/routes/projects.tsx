@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { allProjects } from 'content-collections'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ExternalLink, Github } from 'lucide-react'
+import { ExternalLink, GitBranch } from 'lucide-react'
 
 export const Route = createFileRoute('/projects')({
   component: Projects,
@@ -42,7 +42,7 @@ function Projects() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
                     >
-                      <Github size={16} />
+                      <GitBranch size={16} />
                       GitHub
                     </a>
                   )}
