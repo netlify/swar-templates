@@ -32,6 +32,17 @@ const STARTERS = [
   { id: 'survey', expect: 'favorite season' },
 ]
 
+// Every starter shares one head block in src/routes/__root.tsx. These are the
+// slots the agent fills in on its first edit; og:image is deliberately absent
+// and is injected at the edge once a screenshot exists.
+const SOCIAL_META = [
+  'name="description"',
+  'property="og:title"',
+  'property="og:description"',
+  'property="og:type"',
+  'name="twitter:card"',
+]
+
 const requested = process.argv.slice(2).filter((a) => !a.startsWith('-'))
 const known = STARTERS.map((s) => s.id)
 const unknown = requested.filter((r) => !known.includes(r))
@@ -119,5 +130,10 @@ for (const { id, expect } of selected) {
       body.includes(expect),
       `expected '${expect}' in body. First 2KB:\n${body.slice(0, 2000)}\n--- server log ---\n${serverLog.slice(-1000)}`,
     )
+
+    for (const meta of SOCIAL_META) {
+      assert.ok(body.includes(meta), `expected ${meta} in rendered head. First 2KB:\n${body.slice(0, 2000)}`)
+    }
+    assert.ok(!body.includes('og:image'), 'og:image must not be scaffolded; the edge injects it')
   })
 }
