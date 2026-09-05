@@ -9,7 +9,7 @@
   "dependencies": {
     "@tailwindcss/vite": "4.2.2",
     "@tanstack/ai": "0.10.2",
-    "@tanstack/ai-anthropic": "0.7.3",
+    "@tanstack/ai-anthropic": "0.18.4",
     "@tanstack/ai-client": "0.7.9",
     "@tanstack/ai-gemini": "0.8.7",
     "@tanstack/ai-ollama": "0.6.5",
