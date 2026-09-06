@@ -32,9 +32,8 @@ const STARTERS = [
   { id: 'survey', expect: 'favorite season' },
 ]
 
-// Every starter shares one head block in src/routes/__root.tsx. These are the
-// slots the agent fills in on its first edit; og:image is deliberately absent
-// and is injected at the edge once a screenshot exists.
+// og:image is deliberately absent: the edge injects it once a screenshot of the
+// live site exists, and a scaffolded placeholder would outlive the deploy.
 const SOCIAL_META = [
   'name="description"',
   'property="og:title"',
