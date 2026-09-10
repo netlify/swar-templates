@@ -15,6 +15,26 @@ export const Route = createRootRoute({
       {
         title: 'Application Name',
       },
+      {
+        name: 'description',
+        content: 'A web application.',
+      },
+      {
+        property: 'og:title',
+        content: 'Application Name',
+      },
+      {
+        property: 'og:description',
+        content: 'A web application.',
+      },
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
     ],
   }),
   shellComponent: RootDocument,
