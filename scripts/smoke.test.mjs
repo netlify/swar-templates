@@ -32,8 +32,7 @@ const STARTERS = [
   { id: 'survey', expect: 'favorite season' },
 ]
 
-// og:image is deliberately absent: the edge injects it once a screenshot of the
-// live site exists, and a scaffolded placeholder would outlive the deploy.
+// og:image is absent on purpose: netlify/proxy injects it at the edge.
 const SOCIAL_META = [
   'name="description"',
   'property="og:title"',
