@@ -3,6 +3,9 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 
 import '../styles.css'
 
+const siteName = 'Netlify App'
+const siteDescription = 'A Netlify web app'
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -14,7 +17,27 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Application Name',
+        title: siteName,
+      },
+      {
+        name: 'description',
+        content: siteDescription,
+      },
+      {
+        property: 'og:title',
+        content: siteName,
+      },
+      {
+        property: 'og:description',
+        content: siteDescription,
+      },
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
       },
     ],
   }),
