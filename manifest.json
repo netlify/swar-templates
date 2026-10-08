@@ -12,7 +12,7 @@
     {
       "id": "basic",
       "name": "Basic",
-      "description": "A basic starter kit for building web applications with TanStack Start and React. Use template if no other templates are a close match.",
+      "description": "An empty TanStack Start app with no demo content: one placeholder page, theme colors in one CSS file, and ready-made UI components such as buttons, cards, form fields, dialogs, tabs, and toasts. Use this when no other template is the same kind of product as the request.",
       "features": ["tanstack-start", "react"],
       "framework": "tanstack-start-react"
     },
