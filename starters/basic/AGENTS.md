@@ -24,15 +24,14 @@ A blank TanStack Start app deployed on Netlify. It has one page, a placeholder a
 
 ```
 ├── public
-│   ├── favicon.ico
-│   └── tanstack-circle-logo.png
+│   └── favicon.ico
 ├── src
 │   ├── components
-│   │   └── ui          # shadcn/ui components: badge, button, card, dialog, input, label, select, sonner, tabs, textarea.
+│   │   └── ui          # shadcn/ui components: badge, button, card, dialog, input, label, progress, select, sonner, tabs, textarea, tooltip.
 │   ├── lib
 │   │   └── utils.ts    # cn() helper for merging Tailwind classes.
 │   ├── routes
-│   │   ├── __root.tsx  # HTML shell, <head> metadata (siteName, siteDescription), and the toast container.
+│   │   ├── __root.tsx  # HTML shell, <head> metadata (siteName, siteDescription), the tooltip provider, and the toast container.
 │   │   └── index.tsx   # Home route (/): placeholder page to replace.
 │   ├── router.tsx      # Creates the router from the generated route tree.
 │   └── styles.css      # Tailwind import, theme variables for light and dark mode, base styles.
@@ -65,7 +64,11 @@ Set these variables for the product before you build any page. In components, us
 
 ### UI Components
 
-Ready-made components are in `src/components/ui/`. Use them before writing your own, and restyle them through the theme variables or their variants. Add more with `npx shadcn add <name>`. Show a toast by calling `toast()` from `sonner`; the container is already mounted in `__root.tsx`.
+Ready-made components are in `src/components/ui/`. Use them before writing your own, and restyle them through the theme variables or their variants. Add more with `npx shadcn add <name>`. Show a toast by calling `toast()` from `sonner`; the container is already mounted in `__root.tsx`. `TooltipProvider` is mounted there too, so `Tooltip` works anywhere without its own provider.
+
+### Browser Storage
+
+Pages are rendered on the server first, where `window` and `localStorage` don't exist. Read `localStorage` inside `useEffect`, not during render or in a `useState` initializer, or the first render will differ from the server HTML and React will log a hydration error.
 
 ## Configuration Files
 
@@ -78,8 +81,9 @@ Ready-made components are in `src/components/ui/`. Use them before writing your 
 ## Development Commands
 
 ```bash
-npm run dev      # Start the Vite dev server on port 3000
-npm run build    # Production build
+npm run dev        # Start the Vite dev server on port 3000
+npm run build      # Production build
+npm run typecheck  # Type-check with tsc; the build doesn't
 ```
 
 ## Conventions
