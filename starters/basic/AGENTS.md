@@ -12,12 +12,12 @@ A blank TanStack Start app deployed on Netlify. It has one page, a placeholder a
 |-------|------------|
 | Framework | TanStack Start |
 | Frontend | React 19, TanStack Router |
-| Build | Vite 7 |
+| Build | Vite 8 |
 | Styling | Tailwind CSS 4, theme variables in `src/styles.css` |
 | UI Components | shadcn/ui (Radix UI + Tailwind) |
 | Toasts | sonner |
 | Icons | lucide-react |
-| Language | TypeScript 5.9 (strict mode) |
+| Language | TypeScript 6 (strict mode) |
 | Deployment | Netlify, via `@netlify/vite-plugin-tanstack-start` |
 
 ## Directory Structure
@@ -35,7 +35,7 @@ A blank TanStack Start app deployed on Netlify. It has one page, a placeholder a
 │   │   └── index.tsx   # Home route (/): placeholder page to replace.
 │   ├── router.tsx      # Creates the router from the generated route tree.
 │   └── styles.css      # Tailwind import, theme variables for light and dark mode, base styles.
-├── .claude/skills      # Agent skills: TanStack Start routes, loaders, server functions, API routes, forms, identity, content collections.
+├── .claude/skills      # Supplied by the scaffold from the framework directory: TanStack Start routes, loaders, server functions, API routes, forms, identity, content collections.
 ├── components.json     # shadcn/ui config, used by `npx shadcn add`.
 ├── netlify.toml        # Build command, publish directory, dev server ports.
 ├── package.json
@@ -80,10 +80,13 @@ Pages are rendered on the server first, where `window` and `localStorage` don't 
 
 ## Development Commands
 
+Use Node 24 LTS (`.nvmrc`) and npm. Exact dependency versions are in `package.json`.
+
 ```bash
 npm run dev        # Start the Vite dev server on port 3000
 npm run build      # Production build
-npm run typecheck  # Type-check with tsc; the build doesn't
+npm run typecheck  # Run after the first build generates route types
+npm run preview    # Preview the production build
 ```
 
 ## Conventions

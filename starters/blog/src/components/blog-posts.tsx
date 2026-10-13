@@ -14,7 +14,12 @@ export default function BlogPosts({
       <h1 className="text-3xl font-bold mb-8">{title}</h1>
       <div className="space-y-8">
         {posts.map((post) => (
-          <Link to={`/posts/${post.slug}`} key={post._meta.path} className="block">
+          <Link
+            to="/posts/$slug"
+            params={{ slug: post.slug }}
+            key={post._meta.path}
+            className="block"
+          >
             <article>
               <h2 className="text-xl font-semibold">{post.title}</h2>
               <p className="text-sm text-gray-500 mt-1">{post.date}</p>

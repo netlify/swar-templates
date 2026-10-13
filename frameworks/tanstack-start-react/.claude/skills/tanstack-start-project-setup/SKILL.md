@@ -9,7 +9,7 @@ metadata:
 
 # TanStack Start Project Setup
 
-TanStack Start is a full-stack React framework built on TanStack Router, Vinxi, and Vite.
+TanStack Start is a full-stack React framework built on TanStack Router and Vite. These starters use the Netlify Vite adapter. Use the existing scaffold and exact versions in its `package.json` as the starting point.
 
 ## When to Use
 
@@ -21,13 +21,9 @@ TanStack Start is a full-stack React framework built on TanStack Router, Vinxi, 
 
 ## Quick Start
 
-```bash
-# Create new project
-npx create-tanstack-start@latest my-app
+Use the supplied starter. Run `npm install`, then `npm run dev`. Run `npm run build` before `npm run typecheck` on a fresh checkout so the router and content plugins generate their types. Use Node 24 LTS from `.nvmrc`.
 
-# Or with specific template
-npx create-tanstack-start@latest my-app --template basic
-```
+If adding a dependency, check its current stable release and peer requirements with `npm view <package>@latest version peerDependencies engines`. Update related packages together and run the build and type check. Do not copy old version ranges from examples.
 
 ## Project Structure
 
@@ -45,7 +41,7 @@ my-app/
 │   ├── router.tsx            # Router configuration
 │   └── routeTree.gen.ts      # Auto-generated
 ├── public/
-├── app.config.ts             # TanStack Start config
+├── vite.config.ts            # Vite, TanStack Start, and Netlify plugins
 ├── package.json
 ├── tsconfig.json
 └── netlify.toml              # Netlify deployment
@@ -53,35 +49,28 @@ my-app/
 
 ## Essential Files
 
-### app.config.ts
+### vite.config.ts
 
 ```typescript
-// app.config.ts
-import { defineConfig } from '@tanstack/react-start/config';
+import { defineConfig } from 'vite';
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
+import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import tailwindcss from '@tailwindcss/vite';
+import netlify from '@netlify/vite-plugin-tanstack-start';
 
 export default defineConfig({
-  // Vite configuration
-  vite: {
-    // Add Vite plugins here
-    plugins: [],
-  },
-  
-  // Server configuration
-  server: {
-    // Server preset (netlify, vercel, node, etc.)
-    preset: 'netlify',
-  },
-  
-  // Router configuration
-  tsr: {
-    // Route file location
-    routesDirectory: './src/routes',
-    
-    // Generated route tree location
-    generatedRouteTree: './src/routeTree.gen.ts',
-  },
+  plugins: [
+    tsconfigPaths({ projects: ['./tsconfig.json'] }),
+    tailwindcss(),
+    netlify(),
+    tanstackStart(),
+    react(),
+  ],
 });
 ```
+
+The Start plugin handles route generation and code splitting. Configure router plugin options inside `tanstackStart({ router: { ... } })` when needed; preserve the starter's default paths.
 
 ### router.tsx
 
@@ -136,7 +125,7 @@ import {
   HeadContent,
   Scripts,
 } from '@tanstack/react-router';
-import type { ReactNode } from 'react';
+import appCss from '../styles.css?url';
 
 export const Route = createRootRoute({
   head: () => ({
@@ -147,7 +136,7 @@ export const Route = createRootRoute({
       { name: 'description', content: 'Built with TanStack Start' },
     ],
     links: [
-      { rel: 'stylesheet', href: '/styles.css' },
+      { rel: 'stylesheet', href: appCss },
       { rel: 'icon', href: '/favicon.ico' },
     ],
   }),
@@ -174,76 +163,12 @@ function RootComponent() {
 ### Installation
 
 ```bash
-npm install @tanstack/react-query
+npm install @tanstack/react-query @tanstack/react-router-ssr-query
 ```
 
 ### Setup
 
-```tsx
-// src/router.tsx
-import { createRouter } from '@tanstack/react-router';
-import { QueryClient } from '@tanstack/react-query';
-import { routeTree } from './routeTree.gen';
-
-export function getRouter() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 1000 * 60, // 1 minute
-        gcTime: 1000 * 60 * 5, // 5 minutes
-      },
-    },
-  });
-  
-  const router = createRouter({
-    routeTree,
-    context: {
-      queryClient,
-    },
-  });
-  
-  return router;
-}
-
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: ReturnType<typeof getRouter>;
-  }
-}
-```
-
-### Root with Query Provider
-
-```tsx
-// src/routes/__root.tsx
-import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
-export const Route = createRootRouteWithContext<{
-  queryClient: QueryClient;
-}>()({
-  component: RootComponent,
-});
-
-function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
-  
-  return (
-    <QueryClientProvider client={queryClient}>
-      <html lang="en">
-        <head>
-          <HeadContent />
-        </head>
-        <body>
-          <Outlet />
-          <Scripts />
-          <ReactQueryDevtools />
-        </body>
-      </html>
-    </QueryClientProvider>
-  );
-}
-```
+Follow the [TanStack Query integration guide](https://tanstack.com/router/latest/docs/integrations/query) for the installed Router version. Create a new QueryClient inside `getRouter()` for each server request, declare the query client in the root route context, and use `setupRouterSsrQueryIntegration` from `@tanstack/react-router-ssr-query` for streaming/dehydration support. Do not share a module-level QueryClient between users. Query is optional and is not installed in these starters.
 
 ## TypeScript Configuration
 
@@ -256,16 +181,17 @@ function RootComponent() {
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
+    "types": ["vite/client", "node"],
     "strict": true,
     "noEmit": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "paths": {
-      "~/*": ["./src/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "app.config.ts"],
+  "include": ["src/**/*", "vite.config.ts"],
   "exclude": ["node_modules"]
 }
 ```
@@ -276,29 +202,20 @@ function RootComponent() {
 
 ```toml
 [build]
-  command = "npm run build"
-  publish = ".output/public"
+  command = "vite build"
+  publish = "dist/client"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "24"
 
-# Functions directory (auto-configured by TanStack Start)
-[functions]
-  directory = ".output/server"
+[dev]
+  framework = "#custom"
+  command = "npm run dev"
+  targetPort = 3000
+  port = 8888
 ```
 
-### app.config.ts for Netlify
-
-```typescript
-// app.config.ts
-import { defineConfig } from '@tanstack/react-start/config';
-
-export default defineConfig({
-  server: {
-    preset: 'netlify',
-  },
-});
-```
+The Netlify Vite plugin generates the server output. Keep the existing adapter and publish directory. Do not add an SPA catch-all that bypasses SSR or server routes.
 
 ## Environment Variables
 
@@ -317,7 +234,7 @@ VITE_APP_NAME=My App
 ### Accessing Variables
 
 ```typescript
-// Server-side (server functions, loaders on server)
+// Inside a server function or server-only module; route loaders also run in the browser
 const dbUrl = process.env.DATABASE_URL;
 
 // Client-side (must be prefixed with VITE_)
@@ -332,17 +249,7 @@ const appName = import.meta.env.VITE_APP_NAME;
 npm install tailwindcss @tailwindcss/vite
 ```
 
-```typescript
-// app.config.ts
-import { defineConfig } from '@tanstack/react-start/config';
-import tailwindcss from '@tailwindcss/vite';
-
-export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()],
-  },
-});
-```
+Add `tailwindcss()` from `@tailwindcss/vite` to the existing `vite.config.ts`, as shown above.
 
 ```css
 /* src/styles.css */
@@ -363,45 +270,17 @@ export function Component() {
 ## Development Scripts
 
 ```json
-// package.json
 {
   "scripts": {
-    "dev": "vinxi dev",
-    "build": "vinxi build",
-    "start": "vinxi start",
-    "lint": "eslint src/",
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   }
 }
 ```
 
-## Recommended Package.json
-
-```json
-{
-  "name": "my-tanstack-app",
-  "type": "module",
-  "scripts": {
-    "dev": "vinxi dev",
-    "build": "vinxi build",
-    "start": "vinxi start"
-  },
-  "dependencies": {
-    "@tanstack/react-query": "^5.0.0",
-    "@tanstack/react-router": "^1.0.0",
-    "@tanstack/react-start": "^1.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "vinxi": "^0.5.0",
-    "zod": "^3.23.0"
-  },
-  "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "typescript": "^5.6.0"
-  }
-}
-```
+Vite builds do not type-check. Run both build and typecheck after edits. TypeScript 7 no longer supports `baseUrl`; use relative targets in `compilerOptions.paths`.
 
 ## Database Setup (Drizzle)
 
@@ -476,9 +355,9 @@ export const Route = createRootRoute({
 
 ## Checklist for New Projects
 
-- [ ] Create project with `create-tanstack-start`
-- [ ] Configure `app.config.ts` with Netlify preset
-- [ ] Set up TypeScript paths (`~/`)
+- [ ] Start from the supplied starter and install its dependencies
+- [ ] Preserve `vite.config.ts` with TanStack Start and the Netlify Vite plugin
+- [ ] Set up TypeScript paths (`@/`)
 - [ ] Configure TanStack Query if needed
 - [ ] Set up CSS solution (Tailwind recommended)
 - [ ] Create `.env` for local development
@@ -486,3 +365,9 @@ export const Route = createRootRoute({
 - [ ] Set up database if needed (Drizzle + Netlify Database)
 - [ ] Add ESLint configuration
 - [ ] Set environment variables in Netlify dashboard
+
+## Current references
+
+- [TanStack Start setup](https://tanstack.com/start/latest/docs/framework/react/build-from-scratch)
+- [Netlify TanStack Start guide](https://docs.netlify.com/build/frameworks/framework-setup-guides/tanstack-start/)
+- [Vite migration guide](https://vite.dev/guide/migration)

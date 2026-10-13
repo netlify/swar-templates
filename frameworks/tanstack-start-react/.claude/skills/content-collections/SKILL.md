@@ -18,8 +18,8 @@ Content Collections transforms markdown and other content files into type-safe d
 ## Installation
 
 ```bash
-npm install @content-collections/core
-npm install -D @content-collections/vite  # For Vite/TanStack Start
+npm install zod
+npm install -D @content-collections/core @content-collections/vite  # For Vite/TanStack Start
 ```
 
 ## Basic Setup
@@ -35,7 +35,8 @@ const posts = defineCollection({
   name: 'posts',
   directory: 'content/posts',
   include: '**/*.md',
-  schema: (z) => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
     description: z.string().optional(),
     published: z.string().date(),
@@ -45,23 +46,24 @@ const posts = defineCollection({
 });
 
 export default defineConfig({
-  collections: [posts],
+  content: [posts],
 });
 ```
 
 ### Vite/TanStack Start Integration
 
+Add the Content Collections plugin to the existing Vite plugin list:
+
 ```typescript
-// app.config.ts
-import { defineConfig } from '@tanstack/react-start/config';
+// vite.config.ts (merge with the starter's existing config)
 import contentCollections from '@content-collections/vite';
 
-export default defineConfig({
-  vite: {
-    plugins: [contentCollections()],
-  },
-});
+// plugins: [contentCollections(), ...existingPlugins]
 ```
+
+Use `schema: z.object({ ... })` and import `z` from `zod`. Include `content: z.string()` in Markdown schemas when reading the body; the old schema callback syntax is not supported. The plugin generates `.content-collections/` and the `content-collections` import. Run a build before the first type check.
+
+Add `"content-collections": ["./.content-collections/generated"]` to `compilerOptions.paths` in `tsconfig.json` so TypeScript resolves the same generated module as Vite. Use `content: [posts]` in `defineConfig`; the old `collections` configuration key is deprecated.
 
 ## Content File Structure
 
@@ -120,13 +122,13 @@ allPosts.forEach((post) => {
 
 ```tsx
 // src/routes/blog.tsx
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { allPosts } from 'content-collections';
 
 export const Route = createFileRoute('/blog')({
   loader: () => {
     // Sort by date, newest first
-    const posts = allPosts
+    const posts = [...allPosts]
       .sort((a, b) => 
         new Date(b.published).getTime() - new Date(a.published).getTime()
       );
@@ -159,6 +161,8 @@ function BlogComponent() {
 ```
 
 ### Individual Post Page
+
+This example uses the `html` field produced by the Markdown transform below. Only render trusted repository content; sanitize HTML when accepting user-supplied Markdown.
 
 ```tsx
 // src/routes/blog.$slug.tsx
@@ -200,13 +204,15 @@ function PostComponent() {
 ```typescript
 // content-collections.ts
 import { defineCollection, defineConfig } from '@content-collections/core';
+import { z } from 'zod';
 import { compileMarkdown } from '@content-collections/markdown';
 
 const posts = defineCollection({
   name: 'posts',
   directory: 'content/posts',
   include: '**/*.md',
-  schema: (z) => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
     published: z.string().date(),
   }),
@@ -248,7 +254,8 @@ const posts = defineCollection({
   name: 'posts',
   directory: 'content/posts',
   include: '**/*.md',
-  schema: (z) => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
   }),
   transform: async (document, context) => {
@@ -268,12 +275,14 @@ const posts = defineCollection({
 ```typescript
 // content-collections.ts
 import { defineCollection, defineConfig } from '@content-collections/core';
+import { z } from 'zod';
 
 const posts = defineCollection({
   name: 'posts',
   directory: 'content/posts',
   include: '**/*.md',
-  schema: (z) => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
     published: z.string().date(),
     author: z.string(),
@@ -284,7 +293,8 @@ const docs = defineCollection({
   name: 'docs',
   directory: 'content/docs',
   include: '**/*.md',
-  schema: (z) => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
     order: z.number().optional(),
     category: z.string().optional(),
@@ -295,7 +305,7 @@ const authors = defineCollection({
   name: 'authors',
   directory: 'content/authors',
   include: '**/*.json',
-  schema: (z) => ({
+  schema: z.object({
     name: z.string(),
     email: z.string().email(),
     bio: z.string().optional(),
@@ -304,7 +314,7 @@ const authors = defineCollection({
 });
 
 export default defineConfig({
-  collections: [posts, docs, authors],
+  content: [posts, docs, authors],
 });
 ```
 
@@ -327,7 +337,8 @@ const posts = defineCollection({
   name: 'posts',
   directory: 'content/posts',
   include: '**/*.md',
-  schema: (z) => ({
+  schema: z.object({
+    content: z.string(),
     title: z.string(),
     authorId: z.string(), // Reference to author
   }),
@@ -373,7 +384,8 @@ const posts = defineCollection({
   name: 'posts',
   directory: 'content/posts',
   include: '**/*.md',
-  schema: (z) => ({
+  schema: z.object({
+    content: z.string(),
     // Required fields
     title: z.string().min(1).max(100),
     published: z.string().date(),
@@ -440,7 +452,7 @@ project/
 │       ├── alice.json
 │       └── bob.json
 ├── content-collections.ts
-├── app.config.ts
+├── vite.config.ts
 └── src/
     └── routes/
 ```
@@ -476,7 +488,7 @@ const publishedPosts = allPosts.filter((post) => !post.draft);
 ### Sort by Date
 
 ```typescript
-const sortedPosts = allPosts.sort(
+const sortedPosts = [...allPosts].sort(
   (a, b) => new Date(b.published).getTime() - new Date(a.published).getTime()
 );
 ```
