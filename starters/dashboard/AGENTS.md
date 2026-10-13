@@ -1,130 +1,38 @@
-# AGENTS.md
+# dashboard starter
 
-This document provides an overview of the project structure for developers and AI agents working on this codebase.
+An analytics dashboard with Chart.js and react-chartjs-2, using example data.
 
-## Project Overview
+## Stack and commands
 
-An interactive resume/portfolio application with an AI-powered assistant. Built with TanStack Start and deployed on Netlify.
-
-### Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Framework | TanStack Start |
-| Frontend | React 19, TanStack Router v1 |
-| Build | Vite 7 |
-| Styling | Tailwind CSS 4 |
-| UI Components | Radix UI + custom components |
-| Content | Content Collections (type-safe markdown) |
-| AI | TanStack AI with multi-provider support |
-| Language | TypeScript 5.7 (strict mode) |
-| Deployment | Netlify |
-
-## Directory Structure
-
-```
-├── public
-│   ├── favicon.ico
-│   ├── tanstack-circle-logo.png
-│   └── tanstack-word-logo-white.svg  # TanStack wordmark logo (white) used in header/nav.
-├── src
-│   ├── components
-│   │   ├── Header.tsx  # Header component.
-│   │   └── HeaderNav.tsx  # Navigation sidebar template: mobile menu, Home link, add-on routes; EJS-driven for dynamic route generation.
-│   ├── routes
-│   │   ├── __root.tsx  # Root layout: Header, styles.
-│   │   └── index.tsx  # Dashboard home: Bar, Line, Doughnut charts (revenue, users, sales).
-│   ├── router.tsx  # TanStack Router setup: creates router from generated routeTree with scroll restoration.
-│   └── styles.css  # Global styles: Tailwind import plus base body/code font styling.
-├── .gitignore  # Template for .gitignore: node_modules, dist, .env, .netlify, .tanstack, etc.
-├── AGENTS.md  # This document provides an overview of the project structure for developers and AI agents working on this codebase.
-├── netlify.toml  # Netlify deployment config: build command (vite build), publish directory (dist/client), and dev server settings (port 8888, target 3000).
-├── package.json  # Project manifest with TanStack Start, React 19, Vite 7, Tailwind CSS 4, and Netlify plugin dependencies; defines dev and build scripts.
-├── pnpm-lock.yaml
-├── tsconfig.json  # TypeScript config: ES2022 target, strict mode, @/* path alias for src/*, bundler module resolution.
-└── vite.config.ts  # Vite config template: TanStack Start, React, Tailwind, Netlify plugin, and optional add-on integrations; processed by EJS.
-```
-
-## Key Concepts
-
-### File-Based Routing (TanStack Router)
-
-Routes are defined by files in `src/routes/`:
-
-- `__root.tsx` - Root layout wrapping all pages
-- `index.tsx` - Route for `/`
-- `api.*.ts` - Server API endpoints (e.g., `api.resume-chat.ts` → `/api/resume-chat`)
-
-### Component Architecture
-
-**UI Primitives** (`src/components/ui/`):
-- Radix UI-based, Tailwind-styled
-- Card, Badge, Checkbox, Separator, HoverCard
-
-**Feature Components** (`src/components/`):
-- Header, HeaderNav, ResumeAssistant
-
-## Configuration Files
-
-| File | Purpose |
-|------|---------|
-| `vite.config.ts` | Vite plugins: TanStack Start, Netlify, Tailwind, Content Collections |
-| `tsconfig.json` | TypeScript config with `@/*` path alias for `src/*` |
-| `netlify.toml` | Build command, output directory, dev server settings |
-| `content-collections.ts` | Zod schemas for jobs and education frontmatter |
-| `styles.css` | Tailwind imports + CSS custom properties (oklch colors) |
-
-## Development Commands
+TanStack Start and Router, React, Vite, Tailwind CSS, and strict TypeScript. Exact versions are in `package.json`. Use Node 24 LTS (`.nvmrc`) and npm.
 
 ```bash
-npm run dev      # Start dev server
-npm run build    # Production build
-npm run preview  # Preview production build
+npm install
+npm run dev        # Vite on port 3000
+npm run build      # Generates route/content types and production output
+npm run typecheck  # Run after the first build; Vite does not type-check
+npm run preview    # Preview the production build
 ```
+
+## Files to edit
+
+- `src/routes/index.tsx`: chart registration, datasets, and dashboard UI.
+
+- `src/routes/__root.tsx`: document shell and site metadata.
+- `src/styles.css`: global styling.
+- `src/router.tsx`: router setup.
+- `vite.config.ts`: build plugins, including the Netlify adapter.
+
+## Integration details
+
+Chart.js components are registered in the dashboard route. Keep the registration for every chart type you use. Replace the sample datasets with the requested data source. Verify charts in a browser; server-rendered HTML does not exercise canvas rendering. No environment variables are required.
 
 ## Conventions
 
-### Naming
-- Components: PascalCase
-- Utilities/hooks: camelCase
-- Routes: kebab-case files
-
-### Styling
-- Tailwind CSS utility classes
-- `cn()` helper for conditional class merging
-- CSS variables for theme tokens in `styles.css`
-
-### TypeScript
-- Strict mode enabled
-- Import paths use `@/` alias
-- Zod for runtime validation
-- Type-only imports with `type` keyword
-
-### State Management
-- React hooks for local state
-- Zustand if you need it for global state
-### Chart.js Dashboard
-
-Analytics dashboard with Chart.js and react-chartjs-2.
-
-**Dependencies:** chart.js, react-chartjs-2
-
-**Chart types:**
-- Bar - Revenue by month
-- Line - User growth
-- Doughnut - Sales by category
-
-**Setup:** Register Chart.js components before use (CategoryScale, LinearScale, BarElement, LineElement, PointElement, ArcElement, Title, Tooltip, Legend, Filler).
-
-## Application Name
-
-This starter uses "Application Name" as a placeholder throughout the UI and metadata. Replace it with the user's desired application name in the following locations:
-
-### UI Components
-- `src/components/Header.tsx` — app name displayed in the header
-- `src/components/HeaderNav.tsx` — app name in the mobile navigation header
-
-### SEO Metadata
-- `src/routes/__root.tsx` — the `title` field in the `head()` configuration
-
-Search for all occurrences of "Application Name" in the `src/` directory and replace with the user's application name.
+- Use file routes in `src/routes/` and `@/` imports for `src/`.
+- `src/routeTree.gen.ts` is generated by TanStack Start; do not edit it.
+- Use React hooks for local state. Remove unused imports and parameters; TypeScript checks them.
+- Access browser-only APIs such as `localStorage` in effects or event handlers, not during SSR.
+- Update `siteName` and `siteDescription` in `src/routes/__root.tsx` when branding the app. Keep the social metadata; `og:image` is injected by the hosting edge.
+- Netlify builds with `vite build` and publishes `dist/client`. Keep `@netlify/vite-plugin-tanstack-start`; it provides the server output.
+- Consult the framework skills when supplied by the scaffold, and verify APIs against the installed versions.

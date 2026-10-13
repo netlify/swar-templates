@@ -1,8 +1,8 @@
 // node:test smoke tests for every starter. For each starter:
-//   1. npm install (if node_modules is missing and SKIP_INSTALL not set)
+//   1. npm install (unless SKIP_INSTALL is set)
 //   2. npm run build (unless SKIP_BUILD is set)
-//   3. spawn `vite preview` against the build
-//   4. fetch / and assert the expected text is in the body
+//   3. npm run typecheck (after the build generates route/content types)
+//   4. spawn `vite preview` against the build and check representative routes
 //
 // Run all:        npm run smoke
 // Run one:        npm run smoke -- basic
@@ -11,7 +11,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
-import { stat } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -21,16 +21,23 @@ const PORT = Number(process.env.PORT ?? 8787)
 const STARTERS = [
   { id: 'basic', expect: 'Hello World' },
   { id: 'ai-chat', expect: 'Weather Chat' },
-  { id: 'blog', expect: 'Your Blog' },
+  { id: 'blog', expect: 'Your Blog', paths: ['/posts/blog_entry_1', '/category/General'] },
   { id: 'calculator', expect: '+/-' },
   { id: 'dashboard', expect: 'Analytics Dashboard' },
-  { id: 'ecommerce', expect: 'Product Company' },
-  { id: 'marketing', expect: 'Product Company' },
-  { id: 'portfolio', expect: 'Thoughts on web development' },
+  { id: 'ecommerce', expect: 'Product Company', paths: ['/products/1', '/checkout/success', '/checkout/cancel'] },
+  { id: 'marketing', expect: 'Product Company', paths: ['/products/1'] },
+  { id: 'portfolio', expect: 'Thoughts on web development', paths: ['/resume', '/projects', '/contact', '/blog/getting-started-with-tanstack'] },
   { id: 'resume', expect: 'My Resume' },
-  { id: 'saas', expect: 'Ship faster with' },
-  { id: 'survey', expect: 'favorite season' },
+  { id: 'saas', expect: 'Ship faster with', paths: ['/faq'] },
+  { id: 'survey', expect: 'favorite season', paths: ['/form-survey.html'] },
 ]
+
+const manifest = JSON.parse(await readFile(join(ROOT, 'manifest.json'), 'utf8'))
+assert.deepEqual(
+  STARTERS.map(({ id }) => id).sort(),
+  manifest.starters.map(({ id }) => id).sort(),
+  'Every starter in manifest.json must have smoke coverage',
+)
 
 // og:image is absent on purpose: netlify/proxy injects it at the edge.
 const SOCIAL_META = [
@@ -76,26 +83,19 @@ async function waitForServer(url, attempts = 60, delayMs = 250) {
   throw new Error(`server at ${url} did not become ready`)
 }
 
-async function exists(p) {
-  try {
-    await stat(p)
-    return true
-  } catch {
-    return false
-  }
-}
-
-for (const { id, expect } of selected) {
+for (const { id, expect, paths = [] } of selected) {
   test(id, { timeout: 10 * 60 * 1000 }, async (t) => {
     const dir = join(ROOT, 'starters', id)
 
-    if (!process.env.SKIP_INSTALL && !(await exists(join(dir, 'node_modules')))) {
+    if (!process.env.SKIP_INSTALL) {
       await run('npm', ['install', '--no-package-lock', '--silent'], { cwd: dir })
     }
 
     if (!process.env.SKIP_BUILD) {
       await run('npm', ['run', 'build', '--silent'], { cwd: dir })
     }
+
+    await run('npm', ['run', 'typecheck', '--silent'], { cwd: dir })
 
     // Spawn vite directly (not via npx) so SIGTERM hits the actual server
     // process. With npx in the middle, the vite child gets orphaned on Linux
@@ -133,5 +133,11 @@ for (const { id, expect } of selected) {
       assert.ok(body.includes(meta), `expected ${meta} in rendered head. First 2KB:\n${body.slice(0, 2000)}`)
     }
     assert.ok(!body.includes('og:image'), 'og:image must not be scaffolded; the edge injects it')
+
+    for (const path of paths) {
+      const route = await fetch(`http://127.0.0.1:${PORT}${path}`)
+      assert.equal(route.status, 200, `${id}: expected 200 for ${path}, got ${route.status}`)
+      await route.body?.cancel()
+    }
   })
 }

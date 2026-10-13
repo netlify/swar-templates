@@ -1,6 +1,6 @@
 ---
 name: tanstack-start-server-functions
-description: Create server functions in TanStack Start for server-side logic callable from anywhere. Use for database access, API calls with secrets, mutations, server-only code, or when you must use .inputValidator(...) for createServerFn inputs.
+description: Create server functions in TanStack Start for server-side logic callable from anywhere. Use for database access, API calls with secrets, mutations, server-only code, or when you must use .validator(...) for createServerFn inputs.
 license: Apache-2.0
 metadata:
   author: tanstack
@@ -11,27 +11,24 @@ metadata:
 
 Server functions are the primary way to run server-side code in TanStack Start. They provide type-safe RPC calls from client to server.
 
-## Critical: `validator` Does Not Exist
+## Input validation and version compatibility
 
-When a server function accepts input, you MUST use `.inputValidator(...)`.
+The TanStack Start version pinned in these starters uses `.validator(...)`. Earlier releases used `.inputValidator(...)`; verify the installed builder types when updating the framework instead of mixing examples from different versions.
 
-There is no `.validator(...)` API for TanStack Start server functions. Older examples and model training data may suggest `.validator(...)`, but that API no longer exists here. Use `.inputValidator(...)`, period, for input parsing, validation, and type inference.
+Use a runtime schema for data received across the network. A TypeScript annotation alone does not validate incoming values.
 
 ```typescript
-// Incorrect - this API does not exist for TanStack Start server functions
-export const getPost = createServerFn({ method: 'GET' })
-  .validator((data: { id: string }) => data)
-  .handler(async ({ data }) => {
-    return findPostById(data.id);
-  });
+import { createServerFn } from '@tanstack/react-start';
+import { z } from 'zod';
 
-// Correct - always use inputValidator
 export const getPost = createServerFn({ method: 'GET' })
-  .inputValidator((data: { id: string }) => data)
+  .validator(z.object({ id: z.string().min(1) }))
   .handler(async ({ data }) => {
     return findPostById(data.id);
   });
 ```
+
+See the [current server-function guide](https://tanstack.com/start/latest/docs/framework/react/guide/server-functions) and run `npm run typecheck` after changing the API.
 
 ## When to Use
 
@@ -64,7 +61,7 @@ const posts = await getPosts();
 import { createServerFn } from '@tanstack/react-start';
 
 export const getPost = createServerFn({ method: 'GET' })
-  .inputValidator((data: { id: string }) => data)
+  .validator((data: { id: string }) => data)
   .handler(async ({ data }) => {
     const post = await db.query('SELECT * FROM posts WHERE id = $1', [data.id]);
     return post[0] || null;
@@ -84,14 +81,14 @@ export const getData = createServerFn().handler(async () => {
 
 // GET with explicit method
 export const getUser = createServerFn({ method: 'GET' })
-  .inputValidator((data: { id: string }) => data)
+  .validator((data: { id: string }) => data)
   .handler(async ({ data }) => {
     return await findUser(data.id);
   });
 
 // POST - for mutations
 export const createPost = createServerFn({ method: 'POST' })
-  .inputValidator((data: { title: string; content: string }) => data)
+  .validator((data: { title: string; content: string }) => data)
   .handler(async ({ data }) => {
     const post = await db.insert('posts', data);
     return post;
@@ -111,7 +108,7 @@ const CreateUserSchema = z.object({
 });
 
 export const createUser = createServerFn({ method: 'POST' })
-  .inputValidator(CreateUserSchema)
+  .validator(CreateUserSchema)
   .handler(async ({ data }) => {
     // data is fully typed and validated
     // { email: string, name: string, age?: number }
@@ -173,13 +170,13 @@ import { findPostById, insertPost } from './posts.server';
 import { z } from 'zod';
 
 export const getPost = createServerFn({ method: 'GET' })
-  .inputValidator((data: { id: string }) => data)
+  .validator((data: { id: string }) => data)
   .handler(async ({ data }) => {
     return findPostById(data.id);
   });
 
 export const createPost = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({
+  .validator(z.object({
     title: z.string().min(1),
     content: z.string(),
   }))
@@ -257,7 +254,7 @@ function PostsComponent() {
 import { createServerFn } from '@tanstack/react-start';
 
 export const uploadFile = createServerFn({ method: 'POST' })
-  .inputValidator((formData: FormData) => formData)
+  .validator((formData: FormData) => formData)
   .handler(async ({ data: formData }) => {
     const file = formData.get('file') as File;
     const name = formData.get('name') as string;
@@ -327,7 +324,7 @@ export const getSecretData = createServerFn({ method: 'GET' })
 import { createServerFn } from '@tanstack/react-start';
 
 export const riskyOperation = createServerFn({ method: 'POST' })
-  .inputValidator((data: { value: number }) => data)
+  .validator((data: { value: number }) => data)
   .handler(async ({ data }) => {
     if (data.value < 0) {
       throw new Error('Value must be positive');
@@ -373,7 +370,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { redirect } from '@tanstack/react-router';
 
 export const loginUser = createServerFn({ method: 'POST' })
-  .inputValidator((data: { email: string; password: string }) => data)
+  .validator((data: { email: string; password: string }) => data)
   .handler(async ({ data }) => {
     const user = await authenticate(data.email, data.password);
     
@@ -428,21 +425,21 @@ export const getItems = createServerFn().handler(async () => {
 });
 
 export const getItem = createServerFn({ method: 'GET' })
-  .inputValidator((data: { id: string }) => data)
+  .validator((data: { id: string }) => data)
   .handler(async ({ data }) => {
     const result = await db.select().from(items).where(eq(items.id, data.id));
     return result[0] || null;
   });
 
 export const createItem = createServerFn({ method: 'POST' })
-  .inputValidator(ItemSchema)
+  .validator(ItemSchema)
   .handler(async ({ data }) => {
     const result = await db.insert(items).values(data).returning();
     return result[0];
   });
 
 export const updateItem = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ id: z.string() }).extend(ItemSchema.shape))
+  .validator(z.object({ id: z.string() }).extend(ItemSchema.shape))
   .handler(async ({ data }) => {
     const { id, ...values } = data;
     const result = await db.update(items).set(values).where(eq(items.id, id)).returning();
@@ -450,7 +447,7 @@ export const updateItem = createServerFn({ method: 'POST' })
   });
 
 export const deleteItem = createServerFn({ method: 'POST' })
-  .inputValidator((data: { id: string }) => data)
+  .validator((data: { id: string }) => data)
   .handler(async ({ data }) => {
     await db.delete(items).where(eq(items.id, data.id));
     return { success: true };
@@ -462,6 +459,6 @@ export const deleteItem = createServerFn({ method: 'POST' })
 1. **Server functions run ONLY on the server** - Safe for secrets and DB access
 2. **Type-safe across the network** - Input and output are fully typed
 3. **Use `.functions.ts` suffix** - Clear convention for importable functions
-4. **Validate input with `.inputValidator(...)`** - `.validator(...)` does not exist for TanStack Start server functions
+4. **Validate input with `.validator(...)`** - check the installed version when upgrading
 5. **Keep `.server.ts` files private** - Never import directly in client code
 6. **Use `useServerFn` hook** - When integrating with TanStack Query

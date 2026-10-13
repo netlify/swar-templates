@@ -61,5 +61,5 @@ const projects = defineCollection({
 })
 
 export default defineConfig({
-  collections: [jobs, education, blog, projects],
+  content: [jobs, education, blog, projects],
 })

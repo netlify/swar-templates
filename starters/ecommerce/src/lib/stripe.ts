@@ -1,4 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
 import products from '@/data/products'
 
 export const getStripeEnabled = createServerFn({ method: 'GET' }).handler(
@@ -8,7 +9,7 @@ export const getStripeEnabled = createServerFn({ method: 'GET' }).handler(
 export const createCheckoutSession = createServerFn({
   method: 'POST',
 })
-  .inputValidator((productId: number) => productId)
+  .validator(z.number().int().positive())
   .handler(async ({ data: productId }) => {
     if (!process.env.STRIPE_SECRET_KEY) {
       throw new Error('Stripe is not configured')
@@ -22,7 +23,7 @@ export const createCheckoutSession = createServerFn({
     }
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      allowed_payment_method_types: ['card'],
       line_items: [
         {
           price_data: {

@@ -32,5 +32,5 @@ const education = defineCollection({
 })
 
 export default defineConfig({
-  collections: [jobs, education],
+  content: [jobs, education],
 })
