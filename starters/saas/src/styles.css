@@ -1,15 +1,36 @@
-@import "tailwindcss" source("../");
+@import 'tailwindcss' source('../');
 
 body {
   @apply m-0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+summary {
+  @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gray-800;
+}
+
+.form-input {
+  @apply w-full min-w-0 rounded-lg border bg-white px-3 py-2;
+}
+
+.skip-link {
+  @apply sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-10 focus:rounded-lg focus:bg-white focus:p-3;
+}
+
+summary::-webkit-details-marker {
+  display: none;
 }
