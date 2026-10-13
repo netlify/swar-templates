@@ -8,6 +8,8 @@ export const Route = createFileRoute('/contact')({
 
 function Contact() {
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   if (submitted) {
     return (
@@ -46,18 +48,30 @@ function Contact() {
           method="POST"
           data-netlify="true"
           netlify-honeypot="bot-field"
-          onSubmit={(e) => {
+          aria-busy={isSubmitting}
+          onSubmit={async (e) => {
             e.preventDefault()
-            const form = e.currentTarget
-            const formData = new FormData(form)
-            fetch('/contact.html', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: new URLSearchParams(
-                formData as unknown as Record<string, string>,
-              ).toString(),
-            })
-              .then(() => setSubmitted(true))
+            if (isSubmitting) return
+
+            const formData = new FormData(e.currentTarget)
+            setIsSubmitting(true)
+            setError(null)
+
+            try {
+              const response = await fetch('/contact.html', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(
+                  formData as unknown as Record<string, string>,
+                ).toString(),
+              })
+              if (!response.ok) throw new Error('Form submission failed')
+              setSubmitted(true)
+            } catch {
+              setError("We couldn't send your message. Please try again.")
+            } finally {
+              setIsSubmitting(false)
+            }
           }}
           className="space-y-6"
         >
@@ -119,12 +133,19 @@ function Contact() {
             />
           </div>
 
+          {error && (
+            <p role="alert" className="text-sm text-red-700">
+              {error}
+            </p>
+          )}
+
           <button
             type="submit"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+            disabled={isSubmitting}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Send size={16} />
-            Send Message
+            {isSubmitting ? 'Sending...' : 'Send Message'}
           </button>
         </form>
       </div>

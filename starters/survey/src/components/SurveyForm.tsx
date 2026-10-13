@@ -4,6 +4,8 @@ const seasonOptions = ['Spring', 'Summer', 'Autumn', 'Winter']
 
 export default function SurveyForm() {
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   if (submitted) {
     return (
@@ -31,14 +33,30 @@ export default function SurveyForm() {
         data-netlify="true"
         netlify-honeypot="bot-field"
         className="space-y-6"
-        onSubmit={(e) => {
+        aria-busy={isSubmitting}
+        onSubmit={async (e) => {
           e.preventDefault()
-          const form = e.currentTarget
-          fetch('/form-survey.html', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(new FormData(form) as never).toString(),
-          }).then(() => setSubmitted(true))
+          if (isSubmitting) return
+
+          const formData = new FormData(e.currentTarget)
+          setIsSubmitting(true)
+          setError(null)
+
+          try {
+            const response = await fetch('/form-survey.html', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: new URLSearchParams(
+                formData as unknown as Record<string, string>,
+              ).toString(),
+            })
+            if (!response.ok) throw new Error('Form submission failed')
+            setSubmitted(true)
+          } catch {
+            setError("We couldn't submit your vote. Please try again.")
+          } finally {
+            setIsSubmitting(false)
+          }
         }}
       >
         <input type="hidden" name="form-name" value="favorite-season-survey" />
@@ -105,11 +123,18 @@ export default function SurveyForm() {
           />
         </div>
 
+        {error && (
+          <p role="alert" className="text-sm text-red-700">
+            {error}
+          </p>
+        )}
+
         <button
           type="submit"
-          className="w-full px-8 py-3 border font-semibold rounded-lg"
+          disabled={isSubmitting}
+          className="w-full px-8 py-3 border font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Submit Vote
+          {isSubmitting ? 'Submitting...' : 'Submit Vote'}
         </button>
       </form>
     </div>

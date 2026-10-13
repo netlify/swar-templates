@@ -8,6 +8,11 @@ import type { ChatMessages } from '@/lib/ai-hook'
 
 function Messages({ messages }: { messages: ChatMessages }) {
   const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const visibleMessages = messages.filter(
+    (message) =>
+      message.role !== 'assistant' ||
+      message.parts.some((part) => part.type === 'text' && part.content.trim()),
+  )
 
   useEffect(() => {
     if (messagesContainerRef.current) {
@@ -16,7 +21,7 @@ function Messages({ messages }: { messages: ChatMessages }) {
     }
   }, [messages])
 
-  if (!messages.length) {
+  if (!visibleMessages.length) {
     return null
   }
 
@@ -26,7 +31,7 @@ function Messages({ messages }: { messages: ChatMessages }) {
       className="flex-1 overflow-y-auto pb-4 min-h-0"
     >
       <div className="max-w-3xl mx-auto w-full px-4">
-        {messages.map((message) => (
+        {visibleMessages.map((message) => (
           <div key={message.id} className="p-4 border-b">
             <div className="flex items-start gap-4 max-w-3xl mx-auto w-full">
               <div className="w-8 h-8 rounded-lg border flex items-center justify-center text-sm font-medium flex-shrink-0">
@@ -57,7 +62,7 @@ function Messages({ messages }: { messages: ChatMessages }) {
 
 function Home() {
   const [input, setInput] = useState('')
-  const { messages, sendMessage, isLoading, stop } = useAIChat()
+  const { messages, sendMessage, isLoading, stop, error, reload } = useAIChat()
 
   return (
     <div className="relative flex h-[calc(100vh-80px)]">
@@ -78,6 +83,19 @@ function Home() {
 
         <div className="sticky bottom-0 left-0 right-0 border-t z-10">
           <div className="max-w-3xl mx-auto w-full px-4 py-3">
+            {error && (
+              <div role="alert" className="mb-3 rounded-lg border border-red-300 p-3 text-sm text-red-700">
+                <p>We couldn't complete the response. Please try again.</p>
+                <button
+                  type="button"
+                  onClick={() => void reload()}
+                  disabled={isLoading}
+                  className="mt-2 rounded-lg border px-3 py-1 font-medium disabled:opacity-50"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
             {isLoading && (
               <div className="flex items-center justify-center mb-3">
                 <button
@@ -92,8 +110,8 @@ function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                if (input.trim()) {
-                  sendMessage(input)
+                if (input.trim() && !isLoading) {
+                  void sendMessage(input)
                   setInput('')
                 }
               }}
@@ -109,6 +127,7 @@ function Home() {
                 />
                 <button
                   type="submit"
+                  aria-label="Send message"
                   disabled={!input.trim() || isLoading}
                   className="p-3 border rounded-lg disabled:opacity-50"
                 >
