@@ -1,0 +1,7 @@
+node_modules
+dist
+.netlify
+.tanstack
+src/routeTree.gen.ts
+src/components/ui/LICENSE.md
+package-lock.json

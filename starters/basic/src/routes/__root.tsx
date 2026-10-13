@@ -2,6 +2,7 @@ import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { NotFoundPage, RouteErrorPage } from '@/components/error-pages'
 
 import '../styles.css'
 
@@ -44,6 +45,8 @@ export const Route = createRootRoute({
     ],
   }),
   shellComponent: RootDocument,
+  notFoundComponent: NotFoundPage,
+  errorComponent: RouteErrorPage,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
