@@ -8,7 +8,7 @@ export const getStripeEnabled = createServerFn({ method: 'GET' }).handler(
 export const createCheckoutSession = createServerFn({
   method: 'POST',
 })
-  .inputValidator((productId: number) => productId)
+  .validator((productId: number) => productId)
   .handler(async ({ data: productId }) => {
     if (!process.env.STRIPE_SECRET_KEY) {
       throw new Error('Stripe is not configured')
