@@ -133,5 +133,13 @@ for (const { id, expect } of selected) {
       assert.ok(body.includes(meta), `expected ${meta} in rendered head. First 2KB:\n${body.slice(0, 2000)}`)
     }
     assert.ok(!body.includes('og:image'), 'og:image must not be scaffolded; the edge injects it')
+
+    if (id === 'basic') {
+      const missing = await fetch(`http://127.0.0.1:${PORT}/missing-smoke-route`)
+      assert.equal(missing.status, 404, 'missing routes must return HTTP 404')
+      const missingBody = await missing.text()
+      assert.ok(missingBody.includes('Page not found'))
+      assert.ok(missingBody.includes('Go home'))
+    }
   })
 }
