@@ -59,9 +59,10 @@ const posts = await getPosts();
 ```typescript
 // src/server/posts.functions.ts
 import { createServerFn } from '@tanstack/react-start';
+import { z } from 'zod';
 
 export const getPost = createServerFn({ method: 'GET' })
-  .validator((data: { id: string }) => data)
+  .validator(z.object({ id: z.string().min(1) }))
   .handler(async ({ data }) => {
     const post = await db.query('SELECT * FROM posts WHERE id = $1', [data.id]);
     return post[0] || null;
@@ -74,6 +75,9 @@ const post = await getPost({ data: { id: '123' } });
 ## HTTP Methods
 
 ```typescript
+import { createServerFn } from '@tanstack/react-start';
+import { z } from 'zod';
+
 // GET - for reading data (default)
 export const getData = createServerFn().handler(async () => {
   return { data: 'value' };
@@ -81,14 +85,17 @@ export const getData = createServerFn().handler(async () => {
 
 // GET with explicit method
 export const getUser = createServerFn({ method: 'GET' })
-  .validator((data: { id: string }) => data)
+  .validator(z.object({ id: z.string().min(1) }))
   .handler(async ({ data }) => {
     return await findUser(data.id);
   });
 
 // POST - for mutations
 export const createPost = createServerFn({ method: 'POST' })
-  .validator((data: { title: string; content: string }) => data)
+  .validator(z.object({
+    title: z.string().min(1),
+    content: z.string(),
+  }))
   .handler(async ({ data }) => {
     const post = await db.insert('posts', data);
     return post;
@@ -170,7 +177,7 @@ import { findPostById, insertPost } from './posts.server';
 import { z } from 'zod';
 
 export const getPost = createServerFn({ method: 'GET' })
-  .validator((data: { id: string }) => data)
+  .validator(z.object({ id: z.string().min(1) }))
   .handler(async ({ data }) => {
     return findPostById(data.id);
   });
@@ -252,9 +259,14 @@ function PostsComponent() {
 
 ```typescript
 import { createServerFn } from '@tanstack/react-start';
+import { z } from 'zod';
 
 export const uploadFile = createServerFn({ method: 'POST' })
-  .validator((formData: FormData) => formData)
+  .validator(z.instanceof(FormData).refine(
+    (formData) => formData.get('file') instanceof File &&
+      typeof formData.get('name') === 'string',
+    { message: 'A file and name are required' },
+  ))
   .handler(async ({ data: formData }) => {
     const file = formData.get('file') as File;
     const name = formData.get('name') as string;
@@ -322,9 +334,10 @@ export const getSecretData = createServerFn({ method: 'GET' })
 
 ```typescript
 import { createServerFn } from '@tanstack/react-start';
+import { z } from 'zod';
 
 export const riskyOperation = createServerFn({ method: 'POST' })
-  .validator((data: { value: number }) => data)
+  .validator(z.object({ value: z.number() }))
   .handler(async ({ data }) => {
     if (data.value < 0) {
       throw new Error('Value must be positive');
@@ -368,9 +381,13 @@ function MyComponent() {
 ```typescript
 import { createServerFn } from '@tanstack/react-start';
 import { redirect } from '@tanstack/react-router';
+import { z } from 'zod';
 
 export const loginUser = createServerFn({ method: 'POST' })
-  .validator((data: { email: string; password: string }) => data)
+  .validator(z.object({
+    email: z.string().email(),
+    password: z.string().min(1),
+  }))
   .handler(async ({ data }) => {
     const user = await authenticate(data.email, data.password);
     
@@ -425,7 +442,7 @@ export const getItems = createServerFn().handler(async () => {
 });
 
 export const getItem = createServerFn({ method: 'GET' })
-  .validator((data: { id: string }) => data)
+  .validator(z.object({ id: z.string().min(1) }))
   .handler(async ({ data }) => {
     const result = await db.select().from(items).where(eq(items.id, data.id));
     return result[0] || null;
@@ -447,7 +464,7 @@ export const updateItem = createServerFn({ method: 'POST' })
   });
 
 export const deleteItem = createServerFn({ method: 'POST' })
-  .validator((data: { id: string }) => data)
+  .validator(z.object({ id: z.string().min(1) }))
   .handler(async ({ data }) => {
     await db.delete(items).where(eq(items.id, data.id));
     return { success: true };
