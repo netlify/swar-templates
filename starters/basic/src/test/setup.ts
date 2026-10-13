@@ -4,4 +4,6 @@ import { cleanup } from '@testing-library/react'
 
 afterEach(cleanup)
 
-vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+if (typeof window !== 'undefined') {
+  vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
+}
