@@ -263,8 +263,12 @@ import { z } from 'zod';
 
 export const uploadFile = createServerFn({ method: 'POST' })
   .validator(z.instanceof(FormData).refine(
-    (formData) => formData.get('file') instanceof File &&
-      typeof formData.get('name') === 'string',
+    (formData) => {
+      const file = formData.get('file');
+      const name = formData.get('name');
+      return file instanceof File && file.name.length > 0 &&
+        typeof name === 'string' && name.length > 0;
+    },
     { message: 'A file and name are required' },
   ))
   .handler(async ({ data: formData }) => {
