@@ -14,4 +14,4 @@ Route files use `createFileRoute`. `src/routeTree.gen.ts` is generated; don't ed
 
 Link to dynamic routes with `to="/products/$productId"` and `params={{ productId }}`. Avoid interpolating paths into strings that bypass route checks.
 
-The root route supplies a 404 page and an error page with retry/home actions. In a loader, `throw notFound()` from `@tanstack/react-router` for missing records. Throw unexpected failures normally so the error page handles them. Add route-specific `head()` metadata for individual articles or products; otherwise the root metadata is inherited.
+The root route supplies a 404 page. The router's default error component supplies retry/home actions, including for child-route SSR failures. In a loader, `throw notFound()` from `@tanstack/react-router` for missing records. Throw unexpected failures normally so the error page handles them. Add route-specific `head()` metadata for individual articles or products; otherwise the root metadata is inherited.

@@ -7,116 +7,87 @@ metadata:
   version: "1.0"
 ---
 
-# Netlify Forms — TanStack Start Addendum
+# Netlify Forms in TanStack Start
 
-> **Base skill**: General Netlify Forms usage (HTML setup, spam filtering, honeypot fields, notifications) is covered by the `netlify-forms` skill in the agent-runner base skills. This skill covers **only** the TanStack Start-specific requirement on top of that.
+Apply the base netlify-forms skill for service activation, spam protection, and notifications. This addendum covers SSR registration, submission routing, and honest client states. A contact/signup-interest form is not account creation.
 
----
+TanStack Start renders server responses and hydrates them in the browser. Netlify form detection scans static build output, not the SSR function's later responses. Place a hidden registration form in public; Vite copies it into dist/client for deploy-time scanning. Enable form detection for a generated site before its authorized deployment. Updating these instructions does not authorize a deployment or live test submission.
 
-## The Problem: Netlify Can't Detect React-Rendered Forms
+## Static registration
 
-TanStack Start renders pages via React on the client side. Netlify's build-time form detection works by scanning the **static HTML output** of your build. Because TanStack Start's forms live inside React components, Netlify never sees them during the build — so the form is never registered and submissions will silently fail. Without build-time detection, POSTs containing form data pass through to the SSR function instead of being intercepted by Netlify's form processing.
+Every submitted field, form-name, and honeypot must match the React form. This file includes bot-field as well as its honeypot attribute.
 
----
-
-## The Solution: Dummy Static Form in `./public/`
-
-Place a minimal static HTML file in `./public/` containing a hidden form that mirrors your React form's fields. Netlify scans `public/` at build time, registers the form name, and starts accepting submissions to it.
-
-### `public/contact-form.html`
-
-```html
-<!DOCTYPE html>
-<html>
+```html file=public/contact-form.html
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" /><title>Contact form registration</title></head>
   <body>
-    <!-- This file exists only so Netlify registers the form at build time. -->
-    <!-- It is never shown to users. -->
-    <form name="contact" netlify netlify-honeypot="bot-field" hidden>
-      <input type="text" name="name" />
-      <input type="email" name="email" />
+    <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input name="name" />
+      <input name="email" type="email" />
       <textarea name="message"></textarea>
+      <input name="bot-field" />
     </form>
   </body>
 </html>
 ```
 
-**Rules:**
-- `name="contact"` must exactly match the `name` attribute in your React component's fetch call.
-- Include every field your React form submits — Netlify validates field names against the registered form.
-- Add `netlify-honeypot="bot-field"` here if your React form uses a honeypot field.
+## Complete component
 
----
+POST to /contact-form.html, not /, which the SSR catch-all handles. Use URLSearchParams instead of a hand-written encoder. Capture FormData before disabling the fieldset. A resolved fetch is not proof of success: reject non-2xx responses and the unchanged static registration file that a plain Vite preview can return with status 200.
 
-## The React Component
+```tsx file=src/components/ContactForm.tsx
+import { useState, type FormEvent } from 'react'
 
-Submit via AJAX using `fetch` with `application/x-www-form-urlencoded` encoding. Do **not** use a plain `<form action="/">` — that causes a full-page reload and breaks TanStack Router's client-side navigation.
-
-```tsx
-import { useState } from 'react'
-
-function encode(data: Record<string, string>) {
-  return Object.entries(data)
-    .map(([key, val]) => `${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
-    .join('&')
-}
+type State = 'idle' | 'pending' | 'success' | 'error'
 
 export function ContactForm() {
-  const [fields, setFields] = useState({ name: '', email: '', message: '' })
-  const [submitted, setSubmitted] = useState(false)
+  const [state, setState] = useState<State>('idle')
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => setFields({ ...fields, [e.target.name]: e.target.value })
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await fetch('/contact-form.html', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: encode({ 'form-name': 'contact', ...fields }),
-    })
-    setSubmitted(true)
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (state === 'pending') return
+    const body = new URLSearchParams()
+    new FormData(event.currentTarget).forEach((value, key) => body.append(key, String(value)))
+    setState('pending')
+    try {
+      const response = await fetch('/contact-form.html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+        signal: AbortSignal.timeout(15000),
+      })
+      if (!response.ok) throw new Error('Submission failed')
+      const isUnprocessedRegistration = /\bdata-netlify\s*=/i.test(await response.text())
+      if (isUnprocessedRegistration) throw new Error('Form handling is unavailable')
+      setState('success')
+    } catch {
+      setState('error')
+    }
   }
 
-  if (submitted) return <p>Thanks! We'll be in touch.</p>
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {/* Required hidden field — tells Netlify which registered form this maps to */}
-      <input type="hidden" name="form-name" value="contact" />
-
-      <label>
-        Name
-        <input type="text" name="name" value={fields.name} onChange={handleChange} required />
-      </label>
-      <label>
-        Email
-        <input type="email" name="email" value={fields.email} onChange={handleChange} required />
-      </label>
-      <label>
-        Message
-        <textarea name="message" value={fields.message} onChange={handleChange} required />
-      </label>
-      <button type="submit">Send</button>
-    </form>
-  )
+  return <form name="contact" method="POST" action="/contact-form.html" data-netlify="true" netlify-honeypot="bot-field"
+    onSubmit={submit} onChange={() => { if (state !== 'pending') setState('idle') }}>
+    <input type="hidden" name="form-name" value="contact" />
+    <p hidden><label>Leave empty<input name="bot-field" tabIndex={-1} autoComplete="off" /></label></p>
+    <fieldset disabled={state === 'pending'}>
+      <legend>Contact details</legend>
+      <label>Name<input name="name" autoComplete="name" required maxLength={100} /></label>
+      <label>Email<input name="email" type="email" autoComplete="email" required maxLength={254} /></label>
+      <label>Message<textarea name="message" required maxLength={2000} /></label>
+      <button type="submit">{state === 'pending' ? 'Sending…' : 'Send message'}</button>
+    </fieldset>
+    {state === 'error' && <p role="alert">Nothing was confirmed as sent. Your details are still here; please try again when form handling is available.</p>}
+    {state === 'success' && <p role="status">Your message was received.</p>}
+  </form>
 }
 ```
 
-**Key points:**
-- The hidden `<input name="form-name" value="contact" />` is mandatory — it tells Netlify which form to associate the submission with.
-- `e.preventDefault()` prevents full-page navigation.
-- The `fetch` body uses URL-encoded encoding, not JSON — Netlify Forms requires this format.
+Keep values on failure, prevent duplicate pending sends, and clear old success/error messages when fields change. Never log submitted personal details. Validate and add appropriate spam protection at a custom server endpoint if the destination is replaced.
 
-> **SSR interception warning:** In TanStack Start (and other SSR frameworks), `fetch('/')` will be intercepted by the SSR catch-all function and never reach Netlify's form processing middleware. The `fetch` URL **must** point to the static skeleton file path (e.g. `/contact-form.html`), not `/`. This ensures the request routes through the CDN origin where Netlify's `formsHandler` can process it.
+## Verification
 
----
+Check that the static file exists in dist/client after building and that field names match. Mock HTTP success, HTTP failure, network failure, pending submissions, and unprocessed-preview HTML locally. Vite alone does not deliver Netlify Forms submissions. Do not report live delivery from a local 200 response, and do not deploy or send live submissions without authorization.
 
-## Checklist
-
-- [ ] **Static HTML skeleton exists** in `public/` (e.g. `public/__forms.html`) with `data-netlify="true"` and all field names — this is the most critical step
-- [ ] Form `name` in the static HTML exactly matches `form-name` value in the React component
-- [ ] Every field in the React form is also in the static HTML skeleton
-- [ ] React component has `<input type="hidden" name="form-name" value="..." />`
-- [ ] `fetch` posts to the static skeleton file path (NOT `/`) with `Content-Type: application/x-www-form-urlencoded`
-- [ ] Deployed to Netlify (forms don't work in local dev — test on a deploy preview)
+Reference: https://docs.netlify.com/manage/forms/setup/

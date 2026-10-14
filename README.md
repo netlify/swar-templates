@@ -8,7 +8,7 @@ Every PR runs a smoke test that builds each starter, boots its production output
 
 ### Running locally
 
-Requirements: Node 22+, npm.
+Requirements: Node 22.13+ on the Node 22 line, Node 24, or Node 26+, and npm. The newer lint/test tooling sets the Node 22 minimum alongside TanStack Start.
 
 **Test every starter:**
 
@@ -43,7 +43,7 @@ rm -rf starters/basic/node_modules starters/basic/dist
 npm run smoke -- basic
 ```
 
-`SKIP_INSTALL` is checked against the presence of `node_modules`; deleting it forces a fresh `npm install --no-package-lock`. The build step always runs unless `SKIP_BUILD=1` is set, so removing `dist/` is belt-and-suspenders.
+`SKIP_INSTALL` is checked against the presence of `node_modules`; deleting it forces a fresh `npm install --no-package-lock`. The build step always runs unless `SKIP_BUILD=1` is set, so removing `dist/` is optional.
 
 **Browse a built starter interactively:**
 
@@ -53,3 +53,25 @@ npm install --no-package-lock && npm run build
 npx vite preview --host 127.0.0.1
 # open the URL printed by vite preview — Ctrl+C to stop
 ```
+
+## Shared instructions and framework skills
+
+Each starter's `AGENTS.md` describes its actual source, commands, configuration, and demo limits. Framework skills are supplied separately from `frameworks/tanstack-start-react/.claude/skills`; a standalone starter does not contain that directory. Keep starter-specific instructions when applying shared guidance.
+
+When implementing a starter change, refresh compatible dependencies, remove unused/duplicate entries, check installed APIs and peer requirements, and validate changed behavior locally. A Vite build does not run TypeScript checks. Only run named package scripts that exist in that starter's package.json.
+
+Check the documented starter paths/scripts and all nine skill entrypoints:
+
+```bash
+npm run check:guidance
+```
+
+The skills mark complete example modules with `file=...` code fences and configuration additions with `merge=...`. To build and type-check those examples against both the newer Basic packages and the older Ecommerce packages, install those starters plus Blog, then install optional documentation-only integrations in a temporary directory:
+
+```bash
+npm run smoke -- basic ecommerce blog
+npm install --prefix /tmp/swar-guidance-deps --no-save --package-lock=false @netlify/identity@2.0.0 @netlify/functions @content-collections/core@0.13.1 @content-collections/vite@0.2.9
+GUIDANCE_NODE_MODULES=/tmp/swar-guidance-deps/node_modules npm run check:guidance
+```
+
+The complete check writes isolated apps into an OS temporary directory and prints their paths. It does not edit starter source, deploy a site, configure live services, or send real form/auth requests. Optional integrations are kept out of every starter's dependencies. Compilation checks imports and types; HTTP and browser checks are still needed for changed user flows.

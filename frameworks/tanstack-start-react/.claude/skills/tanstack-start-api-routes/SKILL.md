@@ -7,415 +7,60 @@ metadata:
   version: "1.0"
 ---
 
-# TanStack Start API Routes (Server Routes)
+# HTTP server routes
 
-TanStack Start allows you to create API endpoints using the `server` property on routes. These run server-side and handle raw HTTP requests.
+Use createFileRoute with server.handlers for raw HTTP endpoints. Use createServerFn when a page needs typed RPC instead. These are TanStack Start routes, not Next.js route handlers or a separate Express server.
 
-## When to Use
+## Complete JSON endpoints
 
-- Building REST API endpoints
-- Handling webhooks
-- File uploads/downloads
-- Any endpoint that returns data (not HTML)
-
-**Note**: For RPC-style server logic callable from components, use **server functions** instead. Server routes are for traditional HTTP endpoints.
-
-## Basic Server Route
-
-```typescript
-// src/routes/api/hello.ts
-import { createFileRoute } from '@tanstack/react-router';
+```ts file=src/routes/api.hello.ts
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: async ({ request }) => {
-        return new Response(JSON.stringify({ message: 'Hello, World!' }), {
-          headers: { 'Content-Type': 'application/json' },
-        });
-      },
+  server: { handlers: {
+    GET: () => Response.json({ message: 'Hello' }),
+  } },
+})
+```
+
+```ts file=src/routes/api.echo.ts
+import { createFileRoute } from '@tanstack/react-router'
+import { z } from 'zod'
+
+const input = z.object({ message: z.string().trim().min(1).max(500) })
+
+export const Route = createFileRoute('/api/echo')({
+  server: { handlers: {
+    POST: async ({ request }) => {
+      let body: unknown
+      try { body = await request.json() } catch {
+        return Response.json({ error: 'Invalid JSON' }, { status: 400 })
+      }
+      const parsed = input.safeParse(body)
+      if (!parsed.success) return Response.json({ error: 'A message is required' }, { status: 400 })
+      return Response.json({ message: parsed.data.message })
     },
-  },
-});
+  } },
+})
 ```
 
-## Multiple HTTP Methods
+The echo endpoint validates and returns input only; it does not save a record. Zod must be declared in the generated app before using the example. request, params, and route middleware context come from the handler argument. Read query parameters from new URL(request.url).searchParams.
 
-```typescript
-// src/routes/api/users.ts
-import { createFileRoute } from '@tanstack/react-router';
+## Response and integration rules
 
-export const Route = createFileRoute('/api/users')({
-  server: {
-    handlers: {
-      GET: async ({ request }) => {
-        const users = await fetchUsers();
-        return Response.json(users);
-      },
-      
-      POST: async ({ request }) => {
-        const body = await request.json();
-        const newUser = await createUser(body);
-        return Response.json(newUser, { status: 201 });
-      },
-    },
-  },
-});
-```
+Use Response.json for JSON, new Response for text/bytes, Response.redirect with an absolute trusted destination, and new Response(null, { status: 204 }) for no content. Use status, not a v1 Lambda statusCode object. Return an explicit Response from a handler; do not assume returning undefined renders a page. For combined page/API handling, follow the installed handler's next() contract.
 
-## Dynamic Parameters
+Validate JSON, query values, route parameters, and form fields at runtime. Use request.text() for signed webhook bodies before verifying the signature; JSON parsing first changes the signed bytes. Check required secrets/signatures before calling a provider library. Do not add fulfillment or webhook processing to a checkout-only example unless requested.
 
-```typescript
-// src/routes/api/users/$id.ts
-import { createFileRoute } from '@tanstack/react-router';
+Enforce authorization inside every protected endpoint. A page guard is not an API permission check. Use the Netlify Identity integration rather than an undefined verifyToken helper or hand-written JWT parser. Do not add wildcard CORS to a same-origin app; cross-origin access needs an explicit trusted origin policy.
 
-export const Route = createFileRoute('/api/users/$id')({
-  server: {
-    handlers: {
-      GET: async ({ params }) => {
-        const { id } = params;
-        const user = await getUser(id);
-        
-        if (!user) {
-          return new Response('User not found', { status: 404 });
-        }
-        
-        return Response.json(user);
-      },
-      
-      PUT: async ({ request, params }) => {
-        const { id } = params;
-        const body = await request.json();
-        const updatedUser = await updateUser(id, body);
-        return Response.json(updatedUser);
-      },
-      
-      DELETE: async ({ params }) => {
-        const { id } = params;
-        await deleteUser(id);
-        return new Response(null, { status: 204 });
-      },
-    },
-  },
-});
-```
+For external API requests, check response.ok and validate response data before using it. Do not return internal stack traces, upstream response bodies, keys, or tokens in error messages. File uploads need field, size, and type checks, plus the appropriate storage integration if persistence is requested.
 
-## Multiple Dynamic Parameters
+| File | Endpoint |
+| --- | --- |
+| api.hello.ts | /api/hello |
+| api/items.ts | /api/items |
+| api.items.$itemId.ts | /api/items/:itemId |
+| api.files.$.ts | /api/files/* |
 
-```typescript
-// src/routes/api/users/$userId/posts/$postId.ts
-import { createFileRoute } from '@tanstack/react-router';
-
-export const Route = createFileRoute('/api/users/$userId/posts/$postId')({
-  server: {
-    handlers: {
-      GET: async ({ params }) => {
-        const { userId, postId } = params;
-        const post = await getUserPost(userId, postId);
-        return Response.json(post);
-      },
-    },
-  },
-});
-```
-
-## Handler Context
-
-The handler receives a context object with:
-
-```typescript
-export const Route = createFileRoute('/api/example')({
-  server: {
-    handlers: {
-      GET: async (context) => {
-        // Request object (Web API Request)
-        const { request } = context;
-        
-        // URL parameters from route
-        const { params } = context;
-        
-        // Get headers
-        const authHeader = request.headers.get('Authorization');
-        
-        // Get query parameters
-        const url = new URL(request.url);
-        const searchParams = url.searchParams;
-        const page = searchParams.get('page');
-        
-        return Response.json({ page });
-      },
-    },
-  },
-});
-```
-
-## Request Body Handling
-
-### JSON Body
-
-```typescript
-POST: async ({ request }) => {
-  const body = await request.json();
-  // body is parsed JSON
-  return Response.json({ received: body });
-},
-```
-
-### Form Data
-
-```typescript
-POST: async ({ request }) => {
-  const formData = await request.formData();
-  const name = formData.get('name');
-  const email = formData.get('email');
-  
-  return Response.json({ name, email });
-},
-```
-
-### Raw Text/Binary
-
-```typescript
-POST: async ({ request }) => {
-  const text = await request.text();
-  // or
-  const buffer = await request.arrayBuffer();
-  
-  return new Response('Received', { status: 200 });
-},
-```
-
-## Response Helpers
-
-```typescript
-// JSON response
-return Response.json({ data: 'value' });
-
-// JSON with status
-return Response.json({ error: 'Not found' }, { status: 404 });
-
-// Plain text
-return new Response('Hello', {
-  headers: { 'Content-Type': 'text/plain' },
-});
-
-// HTML
-return new Response('<h1>Hello</h1>', {
-  headers: { 'Content-Type': 'text/html' },
-});
-
-// Redirect
-return Response.redirect('https://example.com', 302);
-
-// No content
-return new Response(null, { status: 204 });
-
-// Stream
-const stream = new ReadableStream({ ... });
-return new Response(stream, {
-  headers: { 'Content-Type': 'application/octet-stream' },
-});
-```
-
-## Error Handling
-
-```typescript
-export const Route = createFileRoute('/api/users/$id')({
-  server: {
-    handlers: {
-      GET: async ({ params }) => {
-        try {
-          const user = await getUser(params.id);
-          
-          if (!user) {
-            return Response.json(
-              { error: 'User not found' },
-              { status: 404 }
-            );
-          }
-          
-          return Response.json(user);
-        } catch (error) {
-          console.error('Error fetching user:', error);
-          
-          return Response.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-          );
-        }
-      },
-    },
-  },
-});
-```
-
-## Authentication
-
-```typescript
-// src/routes/api/protected.ts
-import { createFileRoute } from '@tanstack/react-router';
-import { verifyToken } from '../lib/auth';
-
-export const Route = createFileRoute('/api/protected')({
-  server: {
-    handlers: {
-      GET: async ({ request }) => {
-        const authHeader = request.headers.get('Authorization');
-        
-        if (!authHeader?.startsWith('Bearer ')) {
-          return Response.json(
-            { error: 'Missing authorization header' },
-            { status: 401 }
-          );
-        }
-        
-        const token = authHeader.slice(7);
-        const user = await verifyToken(token);
-        
-        if (!user) {
-          return Response.json(
-            { error: 'Invalid token' },
-            { status: 401 }
-          );
-        }
-        
-        // Proceed with authenticated request
-        return Response.json({ user, message: 'Protected data' });
-      },
-    },
-  },
-});
-```
-
-## CORS Headers
-
-```typescript
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
-
-export const Route = createFileRoute('/api/data')({
-  server: {
-    handlers: {
-      // Handle preflight
-      OPTIONS: async () => {
-        return new Response(null, {
-          status: 204,
-          headers: corsHeaders,
-        });
-      },
-      
-      GET: async ({ request }) => {
-        const data = await fetchData();
-        
-        return Response.json(data, {
-          headers: corsHeaders,
-        });
-      },
-    },
-  },
-});
-```
-
-## File Naming Conventions
-
-| File Path | API Route |
-|-----------|-----------|
-| `routes/api/hello.ts` | `GET /api/hello` |
-| `routes/api/users.ts` | `GET /api/users` |
-| `routes/api/users/$id.ts` | `GET /api/users/:id` |
-| `routes/api/users.index.ts` | `GET /api/users` |
-| `routes/api/file/$.ts` | `GET /api/file/*` (catch-all) |
-
-## Combined Route + API
-
-A single file can handle both page rendering and API:
-
-```typescript
-// src/routes/posts.$postId.tsx
-import { createFileRoute } from '@tanstack/react-router';
-
-export const Route = createFileRoute('/posts/$postId')({
-  // Server route handlers (API)
-  server: {
-    handlers: {
-      // GET /posts/123 with Accept: application/json → JSON response
-      GET: async ({ request, params }) => {
-        const accept = request.headers.get('Accept');
-        
-        if (accept?.includes('application/json')) {
-          const post = await getPost(params.postId);
-          return Response.json(post);
-        }
-        
-        // Fall through to page rendering
-        return undefined;
-      },
-    },
-  },
-  
-  // Page loader and component
-  loader: async ({ params }) => {
-    const post = await getPost(params.postId);
-    return { post };
-  },
-  
-  component: PostComponent,
-});
-```
-
-## Webhooks Example
-
-```typescript
-// src/routes/api/webhooks/stripe.ts
-import { createFileRoute } from '@tanstack/react-router';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
-export const Route = createFileRoute('/api/webhooks/stripe')({
-  server: {
-    handlers: {
-      POST: async ({ request }) => {
-        const sig = request.headers.get('stripe-signature');
-        const body = await request.text();
-        
-        let event: Stripe.Event;
-        
-        try {
-          event = stripe.webhooks.constructEvent(
-            body,
-            sig!,
-            process.env.STRIPE_WEBHOOK_SECRET!
-          );
-        } catch (err) {
-          return Response.json(
-            { error: 'Invalid signature' },
-            { status: 400 }
-          );
-        }
-        
-        switch (event.type) {
-          case 'checkout.session.completed':
-            await handleCheckoutComplete(event.data.object);
-            break;
-          // Handle other events...
-        }
-        
-        return Response.json({ received: true });
-      },
-    },
-  },
-});
-```
-
-## Best Practices
-
-1. **Use server functions for RPC** - If calling from components, prefer `createServerFn`
-2. **Validate input** - Always validate request bodies and parameters
-3. **Handle errors** - Return appropriate status codes and messages
-4. **Set correct headers** - Content-Type, CORS, caching as needed
-5. **Keep handlers focused** - One responsibility per endpoint
-6. **Use TypeScript** - Type your request/response bodies
+Generate route types after adding server routes and check both status and body locally. A build proves compilation, not that a request was accepted or a side effect happened.
