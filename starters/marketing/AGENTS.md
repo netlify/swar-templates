@@ -1,146 +1,41 @@
-# AGENTS.md
+# Product marketing catalog
 
-This document provides an overview of the project structure for developers and AI agents working on this codebase.
+A static product showcase with alternating product sections and detail routes. It has no payment provider, cart state, or enquiry delivery.
 
-## Project Overview
+## Source and customization
 
-An interactive resume/portfolio application with an AI-powered assistant. Built with TanStack Start and deployed on Netlify.
+- `src/data/products.ts`: product copy, IDs, example prices, and images.
+- `src/routes/index.tsx`: Product Company showcase and detail links.
+- `src/routes/products/$productId.tsx`: product lookup and detail page.
 
-### Tech Stack
+## Behavior and limits
 
-| Layer | Technology |
-|-------|------------|
-| Framework | TanStack Start |
-| Frontend | React 19, TanStack Router v1 |
-| Build | Vite 7 |
-| Styling | Tailwind CSS 4 |
-| UI Components | Radix UI + custom components |
-| Content | Content Collections (type-safe markdown) |
-| AI | TanStack AI with multi-provider support |
-| Language | TypeScript 5.7 (strict mode) |
-| Deployment | Netlify |
+The Add to Cart button is currently inactive. Do not call the site a working store. Unknown product IDs throw a generic error instead of a 404. Product images use external URLs; check image loading when replacing content. Prices and features are example copy, not verified commercial claims.
 
-## Directory Structure
+For a requested lead-generation flow, use a real configured enquiry destination, preserve product context, and show honest pending/success/error states. There is no existing form, checkout, storage, or required environment variable.
 
-```
-├── public
-│   ├── favicon.ico
-│   ├── logo.png
-│   ├── tanstack-circle-logo.png
-│   └── tanstack-word-logo-white.svg  # TanStack wordmark logo (white) used in header/nav.
-├── src
-│   ├── components
-│   │   ├── Header.tsx  # Header.
-│   │   ├── HeaderNav.tsx  # Navigation sidebar template: mobile menu, Home link, add-on routes; EJS-driven for dynamic route generation.
-│   │   ├── ProductAIAssistant.tsx  # AI marketing assistant.
-│   │   └── ProductRecommendation.tsx  # Product recommendation card.
-│   ├── data
-│   │   └── products.ts  # Product catalog data template.
-│   ├── lib
-│   │   ├── product-ai-hook.ts  # useProductChat hook.
-│   │   └── product-tools.ts  # AI tools: getProducts, recommendProduct.
-│   ├── routes
-│   │   ├── products
-│   │   │   └── $productId.tsx  # Product detail page with recommendation.
-│   │   ├── __root.tsx  # Root layout: Header, styles.
-│   │   ├── api.product-chat.ts  # POST handler for product AI chat.
-│   │   └── index.tsx  # Marketing home with ProductAIAssistant.
-│   ├── store
-│   │   └── product-assistant.ts  # Zustand store for assistant state.
-│   ├── router.tsx  # TanStack Router setup: creates router from generated routeTree with scroll restoration.
-│   └── styles.css  # Global styles.
-├── .gitignore  # Template for .gitignore: node_modules, dist, .env, .netlify, .tanstack, etc.
-├── AGENTS.md  # This document provides an overview of the project structure for developers and AI agents working on this codebase.
-├── netlify.toml  # Netlify deployment config: build command (vite build), publish directory (dist/client), and dev server settings (port 8888, target 3000).
-├── package.json  # Project manifest with TanStack Start, React 19, Vite 7, Tailwind CSS 4, and Netlify plugin dependencies; defines dev and build scripts.
-├── pnpm-lock.yaml
-├── tsconfig.json  # TypeScript config: ES2022 target, strict mode, @/* path alias for src/*, bundler module resolution.
-└── vite.config.ts  # Vite config template: TanStack Start, React, Tailwind, Netlify plugin, and optional add-on integrations; processed by EJS.
-```
+Replace Product Company in `src/routes/index.tsx`, product content in `src/data/products.ts`, and root metadata. Keep the showcase layout unless the requested design changes it.
 
-## Key Concepts
+## Shared structure and development
 
-### File-Based Routing (TanStack Router)
+TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. The source package pins Vite 7.3.7 and TypeScript 5.9.3; check package.json before changing versions.
 
-Routes are defined by files in `src/routes/`:
+Set `siteName` and `siteDescription` in `src/routes/__root.tsx`; these populate page/social metadata. The current defaults are Netlify App and A Netlify web app. Use actual visible headings/content listed above, not an assumed Application Name placeholder or missing Header component. Global CSS is `src/styles.css`. Public files are copied from `public/` into the client output.
 
-- `__root.tsx` - Root layout wrapping all pages
-- `index.tsx` - Route for `/`
-- `api.*.ts` - Server API endpoints (e.g., `api.resume-chat.ts` → `/api/resume-chat`)
-
-### Component Architecture
-
-**UI Primitives** (`src/components/ui/`):
-- Radix UI-based, Tailwind-styled
-- Card, Badge, Checkbox, Separator, HoverCard
-
-**Feature Components** (`src/components/`):
-- Header, HeaderNav, ResumeAssistant
-
-## Configuration Files
-
-| File | Purpose |
-|------|---------|
-| `vite.config.ts` | Vite plugins: TanStack Start, Netlify, Tailwind, Content Collections |
-| `tsconfig.json` | TypeScript config with `@/*` path alias for `src/*` |
-| `netlify.toml` | Build command, output directory, dev server settings |
-| `content-collections.ts` | Zod schemas for jobs and education frontmatter |
-| `styles.css` | Tailwind imports + CSS custom properties (oklch colors) |
-
-## Development Commands
+Use Node 22.13+ on the Node 22 line, Node 24, or Node 26+. Installed Start packages require at least Node 22.12; Node 22.13 also supports the repository's newer lint/test tooling. Install dependencies from this starter directory, then run:
 
 ```bash
-npm run dev      # Start dev server
-npm run build    # Production build
-npm run preview  # Preview production build
+npm install --no-package-lock
+npm run dev
+npm run build
+npx --no-install tsc --noEmit
+npx --no-install vite preview --host 127.0.0.1
 ```
 
-## Conventions
+Only dev and build are defined in this starter's package.json. The build does not type-check. Run dev/build once before tsc to generate route/content types, and report any failures rather than treating a build as proof of type safety. `netlify.toml` builds with vite build, publishes `dist/client`, and configures the development proxy on 8888 to Vite on 3000. From the repository root, run `npm run smoke -- marketing` to build and check the home page; also check changed routes and actions locally.
 
-### Naming
-- Components: PascalCase
-- Utilities/hooks: camelCase
-- Routes: kebab-case files
+Loaders run on the server and during client navigation. Use server functions for secrets or server-only work, with runtime `.validator(...)` input validation. Use typed Link destinations/params, and use notFound() for missing records when implementing proper 404 behavior. Browser APIs belong in effects/event handlers, never an SSR render or initial state initializer.
 
-### Styling
-- Tailwind CSS utility classes
-- `cn()` helper for conditional class merging
-- CSS variables for theme tokens in `styles.css`
+Refresh compatible dependencies and remove unused/duplicate entries when implementing template changes. Check peer requirements and the installed APIs; don't force incompatible major versions. Preserve appearance and working behavior while fixing a specific issue. Do not add persistence, authentication, or external services unless the requested feature needs them.
 
-### TypeScript
-- Strict mode enabled
-- Import paths use `@/` alias
-- Zod for runtime validation
-- Type-only imports with `type` keyword
-
-### State Management
-- React hooks for local state
-- Zustand if you need it for global state
-### Marketing Site with AI Assistant
-
-Marketing site with TanStack AI chat assistant. No Stripe checkout.
-
-**AI tools available:**
-- `getProducts` - Get all products from catalog
-- `recommendProduct` - Display product recommendation card (MUST use for recommendations)
-
-**Components:** ProductAIAssistant, ProductRecommendation
-
-**Dependencies:** @tanstack/ai, streamdown
-
-## Environment Variables
-
-For AI: ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, or OLLAMA_BASE_URL (same as ai add-on).
-
-## Application Name
-
-This starter uses "Application Name" as a placeholder throughout the UI and metadata. Replace it with the user's desired application name in the following locations:
-
-### UI Components
-- `src/components/Header.tsx` — app name displayed in the header
-- `src/components/HeaderNav.tsx` — app name in the mobile navigation header
-
-### SEO Metadata
-- `src/routes/__root.tsx` — the `title` field in the `head()` configuration
-
-Search for all occurrences of "Application Name" in the `src/` directory and replace with the user's application name.
+Shared framework skill source lives under `frameworks/tanstack-start-react/.claude/skills` in this repository, separate from the standalone starter. Consult the named framework/Netlify skills when available in a generated project; do not assume a starter already contains a .claude directory.
