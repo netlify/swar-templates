@@ -28,7 +28,7 @@ const STARTERS = [
   { id: 'marketing', expect: 'Product Company' },
   { id: 'portfolio', expect: 'Thoughts on web development' },
   { id: 'resume', expect: 'My Resume' },
-  { id: 'saas', expect: 'Ship faster with' },
+  { id: 'saas', expect: 'Find your fit with' },
   { id: 'survey', expect: 'favorite season' },
 ]
 
@@ -140,6 +140,25 @@ for (const { id, expect } of selected) {
       const missingBody = await missing.text()
       assert.ok(missingBody.includes('Page not found'))
       assert.ok(missingBody.includes('Go home'))
+    }
+
+    if (id === 'saas') {
+      for (const plan of ['starter', 'pro', 'enterprise']) {
+        assert.ok(body.includes(`/contact?plan=${plan}`), `missing ${plan} enquiry link`)
+        const contact = await fetch(`http://127.0.0.1:${PORT}/contact?plan=${plan}`)
+        assert.equal(contact.status, 200)
+        const html = await contact.text()
+        assert.match(html, new RegExp(`<option[^>]*value="${plan}"[^>]*selected`))
+        assert.ok(html.includes('Plan enquiry | My SaaS'))
+      }
+      const faq = await fetch(`http://127.0.0.1:${PORT}/faq`)
+      assert.equal(faq.status, 200)
+      const faqHtml = await faq.text()
+      assert.ok(faqHtml.includes('<summary'))
+      assert.ok(faqHtml.includes('Frequently asked questions | My SaaS'))
+      const form = await fetch(`http://127.0.0.1:${PORT}/__forms.html`)
+      assert.equal(form.status, 200)
+      assert.ok((await form.text()).includes('data-netlify="true"'))
     }
   })
 }

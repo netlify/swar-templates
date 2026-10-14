@@ -30,3 +30,11 @@ jobs:
           npm run lint
           npm run format:check
           npm test
+
+      - name: Check SaaS
+        working-directory: starters/saas
+        run: |
+          npm run typecheck
+          npm run lint
+          npm run format:check
+          npm test
