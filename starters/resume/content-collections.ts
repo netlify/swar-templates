@@ -1,19 +1,18 @@
 import { defineCollection, defineConfig } from '@content-collections/core'
-import { z } from 'zod'
+import {
+  jobSchema,
+  educationSchema,
+  renderResumeMarkdown,
+} from './src/lib/resume-content'
 
 const jobs = defineCollection({
   name: 'jobs',
   directory: 'content/jobs',
   include: '**/*.md',
-  schema: z.object({
-    jobTitle: z.string(),
-    summary: z.string(),
-    startDate: z.string(),
-    endDate: z.string().optional(),
-    company: z.string(),
-    location: z.string(),
-    tags: z.array(z.string()),
-    content: z.string(),
+  schema: jobSchema,
+  transform: (document) => ({
+    ...document,
+    html: renderResumeMarkdown(document.content),
   }),
 })
 
@@ -21,16 +20,13 @@ const education = defineCollection({
   name: 'education',
   directory: 'content/education',
   include: '**/*.md',
-  schema: z.object({
-    school: z.string(),
-    summary: z.string(),
-    startDate: z.string(),
-    endDate: z.string().optional(),
-    tags: z.array(z.string()),
-    content: z.string(),
+  schema: educationSchema,
+  transform: (document) => ({
+    ...document,
+    html: renderResumeMarkdown(document.content),
   }),
 })
 
 export default defineConfig({
-  collections: [jobs, education],
+  content: [jobs, education],
 })

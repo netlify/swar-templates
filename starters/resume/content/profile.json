@@ -1,0 +1,10 @@
+{
+  "name": "Jane Doe",
+  "headline": "Software Developer",
+  "summary": "An example professional summary. Replace this with your background, strengths, and the work you want to do next.",
+  "location": "Remote",
+  "email": "jane@example.com",
+  "links": [{ "label": "Portfolio", "url": "https://example.com" }],
+  "skills": ["TypeScript", "React", "Web development"],
+  "photo": { "src": "/headshot-on-white.jpg", "alt": "Example profile photo" }
+}
