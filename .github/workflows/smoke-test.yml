@@ -45,3 +45,10 @@ jobs:
           npm run typecheck
           npm run format:check
           npm test
+
+      - name: Check Calculator
+        working-directory: starters/calculator
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
