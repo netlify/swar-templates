@@ -1,12 +1,23 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
+import {
+  HeadContent,
+  Link,
+  Scripts,
+  createRootRoute,
+} from '@tanstack/react-router'
+import { siteName, siteDescription } from '@/lib/site'
 
 import '../styles.css'
 
-const siteName = 'Netlify App'
-const siteDescription = 'A Netlify web app'
-
 export const Route = createRootRoute({
+  notFoundComponent: () => (
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <h1 className="text-3xl font-bold mb-4">Page not found</h1>
+      <p className="mb-4">That post or page does not exist.</p>
+      <Link to="/" className="underline">
+        Browse all posts
+      </Link>
+    </div>
+  ),
   head: () => ({
     meta: [
       {
@@ -51,7 +62,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className="min-h-screen">
-        <main>{children}</main>
+        <a href="#main-content" className="sr-only focus:not-sr-only">
+          Skip to content
+        </a>
+        <header className="max-w-2xl mx-auto px-4 pt-6">
+          <Link to="/" className="font-semibold">
+            {siteName}
+          </Link>
+        </header>
+        <main id="main-content">{children}</main>
         <Scripts />
       </body>
     </html>
