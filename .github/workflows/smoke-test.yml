@@ -38,3 +38,10 @@ jobs:
           npm run lint
           npm run format:check
           npm test
+
+      - name: Check Resume
+        working-directory: starters/resume
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
