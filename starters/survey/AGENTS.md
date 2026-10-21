@@ -12,13 +12,13 @@ A one-page favorite-season form using Netlify Forms. It collects a name, a requi
 
 The form name is favorite-season-survey. The component POSTs URL-encoded form-name, name, season, reason, and bot-field to `/form-survey.html`. Keep the registration file synchronized with every submitted field. Netlify form detection must be enabled on the generated site; Vite does not process submissions.
 
-The current handler marks a response as recorded after any resolved fetch. It does not check response.ok, prevent repeated pending submissions, or display network failures. Do not use the thank-you state as evidence of delivery. Consult the netlify-forms-tanstack skill when changing this flow and keep failures honest.
+The handler checks response.ok and rejects unprocessed registration HTML before showing the thank-you state. Pending requests disable the fields and block duplicate submissions. HTTP errors, network failures, and the 15-second timeout show an accessible error while preserving answers for retry. Local Vite previews do not process submissions. An accepted response is not proof of a notification or downstream delivery. Consult the netlify-forms-tanstack skill when changing this flow and keep failures honest.
 
 There are no required application environment variables. Replace the question, seasonOptions, labels and thank-you copy in `src/components/SurveyForm.tsx`, registration fields in `public/form-survey.html`, and root metadata.
 
 ## Shared structure and development
 
-TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. The source package pins Vite 7.3.7 and TypeScript 5.9.3; check package.json before changing versions.
+TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. Check package.json for pinned versions. TypeScript stays on 6 because the Netlify adapter's build tooling uses compiler APIs that TypeScript 7 does not provide.
 
 Set `siteName` and `siteDescription` in `src/routes/__root.tsx`; these populate page/social metadata. The current defaults are Netlify App and A Netlify web app. Use actual visible headings/content listed above, not an assumed Application Name placeholder or missing Header component. Global CSS is `src/styles.css`. Public files are copied from `public/` into the client output.
 
@@ -28,11 +28,13 @@ Use Node 22.13+ on the Node 22 line, Node 24, or Node 26+. Installed Start packa
 npm install --no-package-lock
 npm run dev
 npm run build
-npx --no-install tsc --noEmit
-npx --no-install vite preview --host 127.0.0.1
+npm run typecheck
+npm test
+npm run format:check
+npm run preview -- --host 127.0.0.1
 ```
 
-Only dev and build are defined in this starter's package.json. The build does not type-check. Run dev/build once before tsc to generate route/content types, and report any failures rather than treating a build as proof of type safety. `netlify.toml` builds with vite build, publishes `dist/client`, and configures the development proxy on 8888 to Vite on 3000. From the repository root, run `npm run smoke -- survey` to build and check the home page; also check changed routes and actions locally.
+The build does not type-check. Run dev/build once before typecheck to generate route types, and report any failures rather than treating a build as proof of type safety. Tests cover accepted responses, HTTP errors, network failure, pending duplicate prevention, retry, timeout, local preview HTML, and static/React form alignment. They mock submissions and do not contact Netlify Forms. `netlify.toml` builds with vite build, publishes `dist/client`, and configures the development proxy on 8888 to Vite on 3000. From the repository root, run `npm run smoke -- survey` to build and check the home page; also check changed routes and actions locally. Do not deploy or submit to a live form to verify this starter without explicit authorization.
 
 Loaders run on the server and during client navigation. Use server functions for secrets or server-only work, with runtime `.validator(...)` input validation. Use typed Link destinations/params, and use notFound() for missing records when implementing proper 404 behavior. Browser APIs belong in effects/event handlers, never an SSR render or initial state initializer.
 
