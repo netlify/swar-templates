@@ -60,6 +60,13 @@ jobs:
           npm run format:check
           npm test
 
+      - name: Check Portfolio
+        working-directory: starters/portfolio
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+
       - name: Check Blog
         working-directory: starters/blog
         run: |

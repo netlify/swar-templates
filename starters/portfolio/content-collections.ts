@@ -1,65 +1,55 @@
 import { defineCollection, defineConfig } from '@content-collections/core'
-import { z } from 'zod'
+import {
+  assertUniqueSlugs,
+  blogSchema,
+  educationSchema,
+  jobSchema,
+  projectSchema,
+  renderMarkdown,
+  resolveSlug,
+} from './src/lib/content'
 
 const jobs = defineCollection({
   name: 'jobs',
   directory: 'content/jobs',
   include: '**/*.md',
-  schema: z.object({
-    jobTitle: z.string(),
-    summary: z.string(),
-    startDate: z.string(),
-    endDate: z.string().optional(),
-    company: z.string(),
-    location: z.string(),
-    tags: z.array(z.string()),
-    content: z.string(),
-  }),
+  schema: jobSchema,
+  transform: (doc) => ({ ...doc, html: renderMarkdown(doc.content) }),
 })
-
 const education = defineCollection({
   name: 'education',
   directory: 'content/education',
   include: '**/*.md',
-  schema: z.object({
-    school: z.string(),
-    summary: z.string(),
-    startDate: z.string(),
-    endDate: z.string().optional(),
-    tags: z.array(z.string()),
-    content: z.string(),
-  }),
+  schema: educationSchema,
+  transform: (doc) => ({ ...doc, html: renderMarkdown(doc.content) }),
 })
-
 const blog = defineCollection({
   name: 'blog',
   directory: 'content/blog',
   include: '**/*.md',
-  schema: z.object({
-    title: z.string(),
-    date: z.string(),
-    summary: z.string(),
-    tags: z.array(z.string()),
-    author: z.string(),
-    content: z.string(),
+  schema: blogSchema,
+  transform: (doc) => ({
+    ...doc,
+    slug: resolveSlug(doc.slug, doc._meta.path),
+    html: renderMarkdown(doc.content),
   }),
+  onSuccess: (documents) => assertUniqueSlugs(documents),
 })
-
 const projects = defineCollection({
   name: 'projects',
   directory: 'content/projects',
   include: '**/*.md',
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    tags: z.array(z.string()),
-    github: z.string().optional(),
-    liveUrl: z.string().optional(),
-    image: z.string().optional(),
-    content: z.string(),
+  schema: projectSchema,
+  transform: (doc) => ({
+    ...doc,
+    image:
+      doc.image &&
+      !doc.image.startsWith('/') &&
+      !doc.image.startsWith('https://')
+        ? `/${doc.image}`
+        : doc.image,
+    html: renderMarkdown(doc.content),
   }),
 })
 
-export default defineConfig({
-  collections: [jobs, education, blog, projects],
-})
+export default defineConfig({ content: [jobs, education, blog, projects] })

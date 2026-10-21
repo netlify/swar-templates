@@ -1,6 +1,7 @@
-@import "tailwindcss" source("../");
+@import 'tailwindcss' source('../');
 
 @plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -135,4 +136,21 @@ code {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.contact-input {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2;
+}
+
+.contact-button {
+  @apply inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-wait;
+}
+
+.prose {
+  overflow-wrap: anywhere;
+}
+
+.prose pre {
+  max-width: 100%;
+  overflow-x: auto;
 }
