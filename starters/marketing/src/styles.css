@@ -1,11 +1,26 @@
-@import "tailwindcss" source("../");
+@import 'tailwindcss' source('../');
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 code {
   font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.form-label {
+  @apply block font-medium mb-2;
+}
+
+.form-input {
+  @apply w-full rounded-lg border px-4 py-3 focus-visible:outline-2 focus-visible:outline-offset-2;
+}
+
+.action {
+  @apply inline-block rounded-lg border px-6 py-3 font-semibold hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-wait;
 }

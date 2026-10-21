@@ -53,6 +53,13 @@ jobs:
           npm run format:check
           npm test
 
+      - name: Check Marketing
+        working-directory: starters/marketing
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+
       - name: Check Blog
         working-directory: starters/blog
         run: |
