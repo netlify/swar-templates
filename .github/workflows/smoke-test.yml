@@ -67,6 +67,15 @@ jobs:
           npm run format:check
           npm test
 
+      - name: Check Dashboard
+        working-directory: starters/dashboard
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+          npx --no-install playwright install --with-deps chromium
+          npm run test:browser
+
       - name: Check Blog
         working-directory: starters/blog
         run: |

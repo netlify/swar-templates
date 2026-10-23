@@ -4,22 +4,32 @@ A dashboard displaying sample summary cards and Chart.js bar, line, and doughnut
 
 ## Source and customization
 
-- `src/routes/index.tsx`: chart registration, month labels, revenueData, userGrowthData, salesCategoryData, summary stats, and layout.
-- `src/styles.css`: base styles; most chart/card colors are set in the route.
+- `src/routes/index.tsx`: mounts Dashboard.
+- `src/lib/dashboard.ts`: DashboardData, sampleDashboardData, loadDashboardData, summary calculations, and number formatting.
+- `src/components/Dashboard.tsx`: loading, error/retry, empty, and ready states, plus summary cards.
+- `src/components/DashboardCharts.tsx`: Chart.js registration, datasets, and chart options.
+- `src/components/ChartPanel.tsx`: chart layout and keyboard-accessible data tables.
+- `src/styles.css`: base styles; chart/card colors are set in the components.
 
 ## Data and limits
 
-Charts mount only after a client effect, so SSR renders the summary cards without charts. Keep browser-dependent chart work behind that boundary. Summary values and chart datasets are separate constants and are not calculated from one another. Update or derive them together when connecting real data.
+SSR renders the heading and loading state. A client effect calls loadDashboardData and renders summaries, charts, and tables after it resolves. Keep browser-dependent chart work behind that boundary. Loading has reduced-motion-safe placeholders; failed requests show an error and Try again button. Cleanup aborts the loader signal and ignores late responses from replaced requests.
 
-There are no date filters, backend queries, accounts, exports, stored data, or required environment variables. Add accessible text/table equivalents when adding meaningful chart data. Do not present the existing sample values as measured business results.
+The sample is explicitly labeled as illustrative data for January–December 2025. Revenue is the sum of monthly USD revenue; users are a month-end snapshot, so the card takes the final month instead of summing users. Orders sum category counts for the same period. Conversion is orders divided by total monthly visits; zero visits or missing inputs produce Unavailable. Missing arrays produce empty states, while recorded zero values remain zero. There are no invented percentage-change comparisons.
 
-Change Analytics Dashboard and chart labels/data in `src/routes/index.tsx`, plus root metadata.
+Each chart has a named canvas and a View data disclosure with a captioned table and row/column headers. Category counts of all zero show a no-orders message and their table instead of an empty doughnut. Charts have fixed-height responsive containers and no animation.
+
+To replace the sample, change loadDashboardData in `src/lib/dashboard.ts` to return Promise<DashboardData>, or pass a stable DashboardLoader function to `<Dashboard loadData={loader} />`. A remote loader should pass its AbortSignal to fetch, check response.ok, validate the response, and map it to DashboardData. Do not cast unvalidated JSON to this type. Keep secrets in server-side code. The starter performs no remote request itself.
+
+Keep months in chronological order and give each month a unique display label. Revenue must be finite USD amounts; user, visit, and order counts must be finite nonnegative integers. Category names must be unique. All categories must cover the same period as the monthly rows, and each order must belong to one category. Set isSample to false only when replacing the illustrative values with real data, and set period to the actual reporting period. Cards, charts, and tables derive from the returned object; don't add separate summary constants.
+
+There are no date filters, backend queries, accounts, exports, stored data, or required environment variables. Update Analytics Dashboard in `src/components/Dashboard.tsx`, sample data labels in `src/lib/dashboard.ts`, and root metadata when adapting the demo.
 
 ## Shared structure and development
 
-TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. The source package pins Vite 7.3.7 and TypeScript 5.9.3; check package.json before changing versions.
+TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. Check package.json for pinned versions. TypeScript remains on 6 because the Netlify adapter's build tooling uses compiler APIs absent from TypeScript 7.
 
-Set `siteName` and `siteDescription` in `src/routes/__root.tsx`; these populate page/social metadata. The current defaults are Netlify App and A Netlify web app. Use actual visible headings/content listed above, not an assumed Application Name placeholder or missing Header component. Global CSS is `src/styles.css`. Public files are copied from `public/` into the client output.
+Set `siteName` and `siteDescription` in `src/routes/__root.tsx`; these populate page/social metadata and describe the sample analytics dashboard. Global CSS is `src/styles.css`. Public files are copied from `public/` into the client output.
 
 Use Node 22.13+ on the Node 22 line, Node 24, or Node 26+. Installed Start packages require at least Node 22.12; Node 22.13 also supports the repository's newer lint/test tooling. Install dependencies from this starter directory, then run:
 
@@ -27,11 +37,17 @@ Use Node 22.13+ on the Node 22 line, Node 24, or Node 26+. Installed Start packa
 npm install --no-package-lock
 npm run dev
 npm run build
-npx --no-install tsc --noEmit
-npx --no-install vite preview --host 127.0.0.1
+npm run typecheck
+npm test
+npm run format:check
+npx --no-install playwright install chromium
+npm run test:browser
+npm run preview -- --host 127.0.0.1
 ```
 
-Only dev and build are defined in this starter's package.json. The build does not type-check. Run dev/build once before tsc to generate route/content types, and report any failures rather than treating a build as proof of type safety. `netlify.toml` builds with vite build, publishes `dist/client`, and configures the development proxy on 8888 to Vite on 3000. From the repository root, run `npm run smoke -- dashboard` to build and check the home page; also check changed routes and actions locally.
+The build does not type-check. Run dev/build once before typecheck to generate route types. Unit/component tests cover summary formulas, replacement data, loading, error/retry, empty and partial data, zero orders, tables, and cancellation. Component tests mock chart wrappers; Playwright tests use the production build and real charts, check painted canvas pixels at mobile/desktop widths, open tables with the keyboard, and check layout and browser errors. Build before test:browser; it starts its own local preview. PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH can select an existing Chromium binary. CI installs Chromium with its system dependencies and runs both suites.
+
+`netlify.toml` builds with vite build, publishes `dist/client`, and configures the development proxy on 8888 to Vite on 3000. From the repository root, run `npm run smoke -- dashboard` to build and check the server-rendered page. Smoke does not exercise client charts, so also run test:browser. No deployment or live data connection is needed for these checks.
 
 Loaders run on the server and during client navigation. Use server functions for secrets or server-only work, with runtime `.validator(...)` input validation. Use typed Link destinations/params, and use notFound() for missing records when implementing proper 404 behavior. Browser APIs belong in effects/event handlers, never an SSR render or initial state initializer.
 
