@@ -17,13 +17,13 @@
     "@tanstack/ai-ollama": "0.12.0",
     "@tanstack/ai-openai": "0.30.0",
     "@tanstack/ai-react": "0.30.4",
-    "@tanstack/react-router": "1.170.44",
-    "@tanstack/react-start": "1.169.1",
+    "@tanstack/react-router": "1.170.46",
+    "@tanstack/react-start": "1.169.4",
     "highlight.js": "11.12.0",
-    "lucide-react": "1.57.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "streamdown": "2.7.0",
+    "lucide-react": "1.61.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "streamdown": "2.7.1",
     "tailwindcss": "4.3.3",
     "zod": "4.6.7"
   },
@@ -35,7 +35,7 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.2",
     "typescript": "6.0.3",
-    "vite": "8.3.4",
+    "vite": "8.3.5",
     "vitest": "5.0.5"
   },
   "engines": {

@@ -12,10 +12,10 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@tanstack/react-router": "1.170.44",
-    "@tanstack/react-start": "1.169.1",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "@tanstack/react-router": "1.170.46",
+    "@tanstack/react-start": "1.169.4",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "@netlify/vite-plugin-tanstack-start": "1.3.19",
@@ -31,7 +31,7 @@
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
     "vitest": "5.0.5",
-    "vite": "8.3.4"
+    "vite": "8.3.5"
   },
   "engines": {
     "node": "^22.13.0 || ^24.0.0 || >=26.0.0"

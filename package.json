@@ -5,5 +5,8 @@
     "check:guidance": "node scripts/check-guidance.mjs",
     "smoke": "node scripts/smoke.test.mjs",
     "test": "node scripts/smoke.test.mjs"
+  },
+  "engines": {
+    "node": "^22.13.0 || ^24.0.0 || >=26.0.0"
   }
 }

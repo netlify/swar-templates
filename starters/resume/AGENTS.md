@@ -29,7 +29,7 @@ Change profile/contact data in `content/profile.json` and the Markdown entries w
 
 ## Shared structure and development
 
-TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Content Collections before Start, alongside Tailwind, the Netlify adapter, and React. The source package pins Vite 8.3.4 and TypeScript 6.0.3; the current Netlify adapter dependency path is incompatible with TypeScript 7's compiler API.
+TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Content Collections before Start, alongside Tailwind, the Netlify adapter, and React. The source package pins Vite 8.3.5 and TypeScript 6.0.3; the current Netlify adapter dependency path is incompatible with TypeScript 7's compiler API.
 
 `src/routes/__root.tsx` uses the profile's name/headline for page/social titles and summary for descriptions. Public files are copied from `public/` into the client output. Existing checkbox and hover-card primitives remain available, but the resume does not use interactive controls for static skill labels.
 

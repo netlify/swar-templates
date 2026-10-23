@@ -32,7 +32,7 @@ Change the visible Weather Chat title in `src/routes/index.tsx` and the prompt/t
 
 ## Shared structure and development
 
-TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. The source package pins Vite 8.3.4 and TypeScript 6.0.3; check package.json before changing versions.
+TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. The source package pins Vite 8.3.5 and TypeScript 6.0.3; check package.json before changing versions.
 
 TypeScript 7.0.2 was tested and breaks the current Netlify adapter's build through ts-api-utils, which expects TypeScript's JavaScript compiler API. Keep TypeScript 6 until that dependency path supports the new compiler.
 

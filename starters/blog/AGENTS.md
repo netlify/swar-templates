@@ -33,7 +33,7 @@ Set the product name and description in `src/lib/site.ts`, and replace the entri
 
 ## Shared structure and development
 
-TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Content Collections before Start, along with Tailwind, the Netlify adapter, and React. The source package pins Vite 8.3.4 and TypeScript 6.0.3; the current Netlify adapter dependency path is incompatible with TypeScript 7's compiler API.
+TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Content Collections before Start, along with Tailwind, the Netlify adapter, and React. The source package pins Vite 8.3.5 and TypeScript 6.0.3; the current Netlify adapter dependency path is incompatible with TypeScript 7's compiler API.
 
 Global CSS and the typography plugin are configured in `src/styles.css`. Public files are copied from `public/` into the client output. Reusable card primitives are in `src/components/ui/card.tsx`; the blog list uses native articles and typed links.
 

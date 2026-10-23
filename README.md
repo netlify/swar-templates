@@ -2,13 +2,19 @@
 
 Netlify starter templates for [TanStack Start](https://tanstack.com/start) + React. Each project under `starters/` is a standalone, deployable app.
 
+## Dependency baseline
+
+All starters use React 19.3.1, TanStack Start 1.169.4, Router 1.170.46, Vite 8.3.5, and TypeScript 6.0.3. Node 24 is selected for local development, Netlify builds, and CI. TypeScript stays below 7 because the Netlify adapter’s tracing dependencies require the JavaScript compiler API. Review and test major upgrades separately.
+
+The standalone starters omit tracked lockfiles, so exact direct pins do not freeze transitive dependencies.
+
 ## Smoke tests
 
-Every PR runs a smoke test that builds each starter, boots its production output via `vite preview`, and verifies the home page renders expected text. Workflow: `.github/workflows/smoke-test.yml`. Tests: `scripts/smoke.test.mjs` (uses `node:test`).
+Every PR runs a smoke test that builds each starter, type-checks it, boots its production output via `vite preview`, and verifies the home page renders expected text. Workflow: `.github/workflows/smoke-test.yml`. Tests: `scripts/smoke.test.mjs` (uses `node:test`).
 
 ### Running locally
 
-Requirements: Node 22.13+ on the Node 22 line, Node 24, or Node 26+, and npm. The newer lint/test tooling sets the Node 22 minimum alongside TanStack Start.
+Requirements: npm and Node 22.13+ on the Node 22 line, Node 24, or Node 26+. Node 24 is recommended (`nvm use`). The newer lint/test tooling sets the Node 22 minimum alongside TanStack Start.
 
 **Test every starter:**
 
@@ -43,7 +49,7 @@ rm -rf starters/basic/node_modules starters/basic/dist
 npm run smoke -- basic
 ```
 
-`SKIP_INSTALL` is checked against the presence of `node_modules`; deleting it forces a fresh `npm install --no-package-lock`. The build step always runs unless `SKIP_BUILD=1` is set, so removing `dist/` is optional.
+Installation runs by default even when `node_modules` exists, so dependency edits are tested. Type checking runs after the build generates route/content types. `SKIP_INSTALL=1` uses the existing installation.
 
 **Browse a built starter interactively:**
 

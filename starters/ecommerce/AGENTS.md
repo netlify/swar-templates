@@ -21,7 +21,7 @@ Keep the server catalog authoritative for prices and validate inputs when modify
 
 ## Shared structure and development
 
-TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. The source package pins Vite 7.3.7 and TypeScript 5.9.3; check package.json before changing versions.
+TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. The source package pins Vite 8.3.5 and TypeScript 6.0.3; check package.json before changing versions.
 
 Set `siteName` and `siteDescription` in `src/routes/__root.tsx`; these populate page/social metadata. The current defaults are Netlify App and A Netlify web app. Use actual visible headings/content listed above, not an assumed Application Name placeholder or missing Header component. Global CSS is `src/styles.css`. Public files are copied from `public/` into the client output.
 
@@ -31,11 +31,11 @@ Use Node 22.13+ on the Node 22 line, Node 24, or Node 26+. Installed Start packa
 npm install --no-package-lock
 npm run dev
 npm run build
-npx --no-install tsc --noEmit
-npx --no-install vite preview --host 127.0.0.1
+npm run typecheck
+npm run preview -- --host 127.0.0.1
 ```
 
-Only dev and build are defined in this starter's package.json. The build does not type-check. Run dev/build once before tsc to generate route/content types, and report any failures rather than treating a build as proof of type safety. `netlify.toml` builds with vite build, publishes `dist/client`, and configures the development proxy on 8888 to Vite on 3000. From the repository root, run `npm run smoke -- ecommerce` to build and check the home page; also check changed routes and actions locally.
+The starter defines dev, build, preview, and typecheck scripts. The build does not type-check. Run dev/build once before tsc to generate route/content types, and report any failures rather than treating a build as proof of type safety. `netlify.toml` builds with vite build, publishes `dist/client`, and configures the development proxy on 8888 to Vite on 3000. From the repository root, run `npm run smoke -- ecommerce` to build and check the home page; also check changed routes and actions locally.
 
 Loaders run on the server and during client navigation. Use server functions for secrets or server-only work, with runtime `.validator(...)` input validation. Use typed Link destinations/params, and use notFound() for missing records when implementing proper 404 behavior. Browser APIs belong in effects/event handlers, never an SSR render or initial state initializer.
 

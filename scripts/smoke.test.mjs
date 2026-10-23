@@ -1,17 +1,7 @@
-// node:test smoke tests for every starter. For each starter:
-//   1. npm install (if node_modules is missing and SKIP_INSTALL not set)
-//   2. npm run build (unless SKIP_BUILD is set)
-//   3. spawn `vite preview` against the build
-//   4. fetch / and assert the expected text is in the body
-//
-// Run all:        npm run smoke
-// Run one:        npm run smoke -- basic
-// Run several:    npm run smoke -- basic blog
-// Skip rebuild:   SKIP_BUILD=1 npm run smoke -- basic
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
-import { stat } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -31,6 +21,13 @@ const STARTERS = [
   { id: 'saas', expect: 'Find your fit with' },
   { id: 'survey', expect: 'favorite season' },
 ]
+
+const manifest = JSON.parse(await readFile(join(ROOT, 'manifest.json'), 'utf8'))
+assert.deepEqual(
+  STARTERS.map(({ id }) => id).sort(),
+  manifest.starters.map(({ id }) => id).sort(),
+  'Every starter in manifest.json must have smoke coverage',
+)
 
 // og:image is absent on purpose: netlify/proxy injects it at the edge.
 const SOCIAL_META = [
@@ -76,20 +73,11 @@ async function waitForServer(url, attempts = 60, delayMs = 250) {
   throw new Error(`server at ${url} did not become ready`)
 }
 
-async function exists(p) {
-  try {
-    await stat(p)
-    return true
-  } catch {
-    return false
-  }
-}
-
 for (const { id, expect } of selected) {
   test(id, { timeout: 10 * 60 * 1000 }, async (t) => {
     const dir = join(ROOT, 'starters', id)
 
-    if (!process.env.SKIP_INSTALL && !(await exists(join(dir, 'node_modules')))) {
+    if (!process.env.SKIP_INSTALL) {
       await run('npm', ['install', '--no-package-lock', '--silent'], { cwd: dir })
     }
 
@@ -97,10 +85,9 @@ for (const { id, expect } of selected) {
       await run('npm', ['run', 'build', '--silent'], { cwd: dir })
     }
 
-    // Spawn vite directly (not via npx) so SIGTERM hits the actual server
-    // process. With npx in the middle, the vite child gets orphaned on Linux
-    // and keeps holding the port, causing subsequent tests to fetch against
-    // the previous starter's still-running server.
+    await run('npm', ['run', 'typecheck', '--silent'], { cwd: dir })
+
+    // npx can orphan the preview process and leave its port occupied.
     const viteBin = join(dir, 'node_modules', '.bin', 'vite')
     const server = spawn(
       viteBin,
@@ -133,6 +120,14 @@ for (const { id, expect } of selected) {
       assert.ok(body.includes(meta), `expected ${meta} in rendered head. First 2KB:\n${body.slice(0, 2000)}`)
     }
     assert.ok(!body.includes('og:image'), 'og:image must not be scaffolded; the edge injects it')
+
+    if (id === 'ecommerce') {
+      for (const path of ['/products/1', '/checkout/success', '/checkout/cancel']) {
+        const response = await fetch(`http://127.0.0.1:${PORT}${path}`)
+        assert.equal(response.status, 200, `expected 200 for ${path}`)
+        await response.body?.cancel()
+      }
+    }
 
     if (id === 'basic') {
       const missing = await fetch(`http://127.0.0.1:${PORT}/missing-smoke-route`)
