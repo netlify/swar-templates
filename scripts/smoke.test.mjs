@@ -25,7 +25,7 @@ const STARTERS = [
   { id: 'calculator', expect: '+/-' },
   { id: 'dashboard', expect: 'Analytics Dashboard' },
   { id: 'ecommerce', expect: 'Product Company' },
-  { id: 'marketing', expect: 'Product Company' },
+  { id: 'marketing', expect: 'Everyday Objects' },
   { id: 'portfolio', expect: 'Thoughts on web development' },
   { id: 'resume', expect: 'My Resume' },
   { id: 'saas', expect: 'Find your fit with' },
