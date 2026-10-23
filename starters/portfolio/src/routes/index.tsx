@@ -1,65 +1,86 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { allBlogs } from 'content-collections'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Calendar } from 'lucide-react'
+import { allBlogs, allProjects } from 'content-collections'
+import { site, pageMeta } from '../lib/site'
+import { newestPosts } from '../lib/chronology'
 
 export const Route = createFileRoute('/')({
-  component: BlogIndex,
+  component: PortfolioHome,
+  head: () => pageMeta('Portfolio', site.description),
 })
 
-function BlogIndex() {
-  const posts = [...allBlogs].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  )
-
+function PortfolioHome() {
   return (
-    <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Blog</h1>
-        <p className="text-gray-600 mb-8">
-          Thoughts on web development, design, and technology.
-        </p>
-
-        <div className="space-y-6">
-          {posts.map((post) => (
-            <Link
-              key={post._meta.path}
-              to="/blog/$slug"
-              params={{ slug: post._meta.path }}
-              className="block"
-            >
-              <Card className="cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="text-xl">{post.title}</CardTitle>
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Calendar size={14} />
-                    <time>
-                      {new Date(post.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </time>
-                    <span>·</span>
-                    <span>{post.author}</span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{post.summary}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {post.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+    <div className="max-w-4xl mx-auto px-4 py-12 space-y-12">
+      <section>
+        <p className="text-sm text-gray-600 mb-3">Example portfolio</p>
+        <h1 className="text-4xl font-bold mb-3">
+          {site.name}, {site.role.toLowerCase()}
+        </h1>
+        <p className="text-lg text-gray-600 max-w-2xl mb-6">{site.summary}</p>
+        <div className="flex flex-wrap gap-5">
+          <Link to="/projects" className="font-semibold underline">
+            Explore my work
+          </Link>
+          <Link to="/contact" className="font-semibold underline">
+            Get in touch
+          </Link>
         </div>
-      </div>
+      </section>
+      <section aria-labelledby="featured-work">
+        <h2 id="featured-work" className="text-2xl font-bold mb-6">
+          Selected work
+        </h2>
+        {allProjects.length ? (
+          <div className="grid gap-6 sm:grid-cols-2">
+            {allProjects.slice(0, 2).map((project) => (
+              <article
+                key={project._meta.path}
+                className="border rounded-xl p-6"
+              >
+                <h3 className="text-xl font-semibold mb-3">{project.title}</h3>
+                <p className="mb-4 text-gray-600">{project.description}</p>
+                <Link
+                  to="/projects"
+                  hash={project._meta.path}
+                  className="underline"
+                >
+                  Read about {project.title}
+                </Link>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p>No projects published yet.</p>
+        )}
+      </section>
+      <section aria-labelledby="latest-writing">
+        <h2 id="latest-writing" className="text-2xl font-bold mb-6">
+          Latest writing
+        </h2>
+        {allBlogs.length ? (
+          <ul className="space-y-4">
+            {newestPosts(allBlogs)
+              .slice(0, 3)
+              .map((post) => (
+                <li key={post.slug}>
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: post.slug }}
+                    className="underline font-medium"
+                  >
+                    {post.title}
+                  </Link>
+                  <p className="mt-1 text-gray-600">{post.summary}</p>
+                </li>
+              ))}
+          </ul>
+        ) : (
+          <p>No posts published yet.</p>
+        )}
+        <Link to="/blog" className="inline-block mt-6 underline">
+          All blog posts
+        </Link>
+      </section>
     </div>
   )
 }
