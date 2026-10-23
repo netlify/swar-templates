@@ -76,6 +76,13 @@ jobs:
           npx --no-install playwright install --with-deps chromium
           npm run test:browser
 
+      - name: Check Survey
+        working-directory: starters/survey
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+
       - name: Check Blog
         working-directory: starters/blog
         run: |
