@@ -1,10 +1,10 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
+import { profile, resumeTitle } from '@/lib/profile'
 
 import '../styles.css'
 
-const siteName = 'Netlify App'
-const siteDescription = 'A Netlify web app'
+const siteName = resumeTitle
+const siteDescription = profile.summary
 
 export const Route = createRootRoute({
   head: () => ({

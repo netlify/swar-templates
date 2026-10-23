@@ -1,12 +1,14 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
+import { site } from '../data/site'
+import { NotFoundPage } from '../components/NotFoundPage'
 
 import '../styles.css'
 
-const siteName = 'Netlify App'
-const siteDescription = 'A Netlify web app'
+const siteName = site.name
+const siteDescription = site.description
 
 export const Route = createRootRoute({
+  notFoundComponent: NotFoundPage,
   head: () => ({
     meta: [
       {

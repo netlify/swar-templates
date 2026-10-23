@@ -1,10 +1,10 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-
+import { SiteNavigation } from '@/components/SiteNavigation'
+import { site } from '@/lib/content'
 import '../styles.css'
 
-const siteName = 'Netlify App'
-const siteDescription = 'A Netlify web app'
+const siteName = site.name
+const siteDescription = site.description
 
 export const Route = createRootRoute({
   head: () => ({
@@ -51,7 +51,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <SiteNavigation />
+        <main id="main-content" tabIndex={-1}>
+          {children}
+        </main>
+        <footer className="border-t px-4 py-10 text-center text-sm">
+          {site.name} · Example plans and enquiries
+        </footer>
         <Scripts />
       </body>
     </html>

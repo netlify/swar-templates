@@ -27,3 +27,77 @@ jobs:
           STRIPE_SECRET_KEY: sk_test_dummy_ci_key
           SITE_URL: http://localhost:8787
         run: node scripts/smoke.test.mjs
+
+      - name: Check guidance
+        run: npm run check:guidance
+
+      - name: Check AI Chat
+        working-directory: starters/ai-chat
+        run: npm test
+
+      - name: Check Basic
+        working-directory: starters/basic
+        run: |
+          npm run typecheck
+          npm run lint
+          npm run format:check
+          npm test
+
+      - name: Check SaaS
+        working-directory: starters/saas
+        run: |
+          npm run typecheck
+          npm run lint
+          npm run format:check
+          npm test
+
+      - name: Check Resume
+        working-directory: starters/resume
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+
+      - name: Check Calculator
+        working-directory: starters/calculator
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+
+      - name: Check Marketing
+        working-directory: starters/marketing
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+
+      - name: Check Portfolio
+        working-directory: starters/portfolio
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+
+      - name: Check Dashboard
+        working-directory: starters/dashboard
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+          npx --no-install playwright install --with-deps chromium
+          npm run test:browser
+
+      - name: Check Survey
+        working-directory: starters/survey
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test
+
+      - name: Check Blog
+        working-directory: starters/blog
+        run: |
+          npm run typecheck
+          npm run format:check
+          npm test

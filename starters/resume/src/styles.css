@@ -1,4 +1,5 @@
-@import "tailwindcss" source("../");
+@import 'tailwindcss' source('../');
+@plugin "@tailwindcss/typography";
 
 @plugin "tailwindcss-animate";
 
@@ -134,5 +135,122 @@ code {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+}
+
+@page {
+  margin: 12mm;
+}
+
+@media print {
+  :root,
+  .dark {
+    --background: white;
+    --foreground: black;
+    --card: white;
+    --card-foreground: black;
+    --secondary: white;
+    --secondary-foreground: black;
+    --muted-foreground: black;
+    --border: #ccc;
+  }
+  body {
+    font-size: 10pt;
+  }
+  .resume-page {
+    padding: 0;
+    min-height: auto;
+  }
+  .resume-content {
+    max-width: none;
+  }
+  .resume-content > *,
+  .resume-header > *,
+  .resume-section > *,
+  .resume-section > div > * {
+    margin-block: 0;
+  }
+  .resume-content > * + * {
+    margin-top: 16pt;
+  }
+  .resume-header {
+    text-align: left;
+  }
+  .resume-header > * + * {
+    margin-top: 4pt;
+  }
+  .resume-header h1 {
+    font-size: 24pt;
+  }
+  .resume-contact {
+    justify-content: flex-start;
+  }
+  .resume-contact a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+    overflow-wrap: anywhere;
+  }
+  .resume-print-button {
+    display: none;
+  }
+  .resume-card {
+    display: block;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+  .resume-card [data-slot='card-header'],
+  .resume-card [data-slot='card-content'] {
+    padding: 0;
+  }
+  .resume-card [data-slot='card-content'] {
+    margin-top: 6pt;
+  }
+  .resume-summary {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16pt;
+  }
+  .resume-photo {
+    width: 48pt;
+    height: 58pt;
+    border-radius: 4pt;
+  }
+  h2 {
+    font-size: 15pt !important;
+    break-after: avoid;
+  }
+  h3 {
+    font-size: 12pt !important;
+    break-after: avoid;
+  }
+  .resume-section > * + *,
+  .resume-section > div > * + * {
+    margin-top: 12pt;
+  }
+  .resume-entry {
+    break-inside: avoid;
+  }
+  .resume-card p {
+    margin-bottom: 6pt;
+    line-height: 1.4;
+  }
+  .resume-card [data-slot='card-header'] p {
+    margin-block: 4pt 0;
+  }
+  .resume-prose {
+    margin-top: 8pt;
+    font-size: 10pt;
+    color: black;
+  }
+  .resume-prose p,
+  .resume-prose li {
+    orphans: 3;
+    widows: 3;
   }
 }

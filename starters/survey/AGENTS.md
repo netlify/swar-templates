@@ -1,40 +1,43 @@
-# survey starter
+# Favorite-season survey
 
-A favorite-season survey submitted through Netlify Forms.
+A one-page favorite-season form using Netlify Forms. It collects a name, a required season selection, and an optional reason. It has no results dashboard, analytics service, accounts, or AI assistant.
 
-## Stack and commands
+## Source and customization
 
-TanStack Start and Router, React, Vite, Tailwind CSS, and strict TypeScript. Exact versions are in `package.json`. Use Node 24 LTS (`.nvmrc`) and npm.
+- `src/routes/index.tsx`: SurveyForm mount and page layout.
+- `src/components/SurveyForm.tsx`: seasonOptions, fields, POST, and thank-you state.
+- `public/form-survey.html`: hidden static registration form.
+
+## Forms and limits
+
+The form name is favorite-season-survey. The component POSTs URL-encoded form-name, name, season, reason, and bot-field to `/form-survey.html`. Keep the registration file synchronized with every submitted field. Netlify form detection must be enabled on the generated site; Vite does not process submissions.
+
+The handler checks response.ok and rejects unprocessed registration HTML before showing the thank-you state. Pending requests disable the fields and block duplicate submissions. HTTP errors, network failures, and the 15-second timeout show an accessible error while preserving answers for retry. Local Vite previews do not process submissions. An accepted response is not proof of a notification or downstream delivery. Consult the netlify-forms-tanstack skill when changing this flow and keep failures honest.
+
+There are no required application environment variables. Replace the question, seasonOptions, labels and thank-you copy in `src/components/SurveyForm.tsx`, registration fields in `public/form-survey.html`, and root metadata.
+
+## Shared structure and development
+
+TanStack Start and React 19 use file routes in `src/routes/`, `src/router.tsx`, and the generated `src/routeTree.gen.ts`. `vite.config.ts` runs Tailwind, the Netlify adapter, Start, and React plugins. Check package.json for pinned versions. TypeScript stays on 6 because the Netlify adapter's build tooling uses compiler APIs that TypeScript 7 does not provide.
+
+Set `siteName` and `siteDescription` in `src/routes/__root.tsx`; these populate page/social metadata. The current defaults are Netlify App and A Netlify web app. Use actual visible headings/content listed above, not an assumed Application Name placeholder or missing Header component. Global CSS is `src/styles.css`. Public files are copied from `public/` into the client output.
+
+Use Node 22.13+ on the Node 22 line, Node 24, or Node 26+. Installed Start packages require at least Node 22.12; Node 22.13 also supports the repository's newer lint/test tooling. Install dependencies from this starter directory, then run:
 
 ```bash
-npm install
-npm run dev        # Vite on port 3000
-npm run build      # Generates route/content types and production output
-npm run typecheck  # Run after the first build; Vite does not type-check
-npm run preview    # Preview the production build
+npm install --no-package-lock
+npm run dev
+npm run build
+npm run typecheck
+npm test
+npm run format:check
+npm run preview -- --host 127.0.0.1
 ```
 
-## Files to edit
+The build does not type-check. Run dev/build once before typecheck to generate route types, and report any failures rather than treating a build as proof of type safety. Tests cover accepted responses, HTTP errors, network failure, pending duplicate prevention, retry, timeout, local preview HTML, and static/React form alignment. They mock submissions and do not contact Netlify Forms. `netlify.toml` builds with vite build, publishes `dist/client`, and configures the development proxy on 8888 to Vite on 3000. From the repository root, run `npm run smoke -- survey` to build and check the home page; also check changed routes and actions locally. Do not deploy or submit to a live form to verify this starter without explicit authorization.
 
-- `src/components/SurveyForm.tsx`: survey fields and submission UI.
-- `src/routes/index.tsx`: survey page.
-- `public/form-survey.html`: static Netlify Forms declaration.
+Loaders run on the server and during client navigation. Use server functions for secrets or server-only work, with runtime `.validator(...)` input validation. Use typed Link destinations/params, and use notFound() for missing records when implementing proper 404 behavior. Browser APIs belong in effects/event handlers, never an SSR render or initial state initializer.
 
-- `src/routes/__root.tsx`: document shell and site metadata.
-- `src/styles.css`: global styling.
-- `src/router.tsx`: router setup.
-- `vite.config.ts`: build plugins, including the Netlify adapter.
+Refresh compatible dependencies and remove unused/duplicate entries when implementing template changes. Check peer requirements and the installed APIs; don't force incompatible major versions. Preserve appearance and working behavior while fixing a specific issue. Do not add persistence, authentication, or external services unless the requested feature needs them.
 
-## Integration details
-
-The form name is `favorite-season-survey`; fields include `name`, `season`, `reason`, and the `bot-field` honeypot. Keep the React form and static declaration synchronized. Form submissions POST to `/form-survey.html`. Test acceptance and failures on Netlify with form detection enabled; a local preview only verifies rendering. No environment variables are required.
-
-## Conventions
-
-- Use file routes in `src/routes/` and `@/` imports for `src/`.
-- `src/routeTree.gen.ts` is generated by TanStack Start; do not edit it.
-- Use React hooks for local state. Remove unused imports and parameters; TypeScript checks them.
-- Access browser-only APIs such as `localStorage` in effects or event handlers, not during SSR.
-- Update `siteName` and `siteDescription` in `src/routes/__root.tsx` when branding the app. Keep the social metadata; `og:image` is injected by the hosting edge.
-- Netlify builds with `vite build` and publishes `dist/client`. Keep `@netlify/vite-plugin-tanstack-start`; it provides the server output.
-- Consult the framework skills when supplied by the scaffold, and verify APIs against the installed versions.
+Shared framework skill source lives under `frameworks/tanstack-start-react/.claude/skills` in this repository, separate from the standalone starter. Consult the named framework/Netlify skills when available in a generated project; do not assume a starter already contains a .claude directory.

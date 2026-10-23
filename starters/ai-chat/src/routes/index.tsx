@@ -57,7 +57,7 @@ function Messages({ messages }: { messages: ChatMessages }) {
 
 function Home() {
   const [input, setInput] = useState('')
-  const { messages, sendMessage, isLoading, stop } = useAIChat()
+  const { messages, sendMessage, isLoading, stop, error } = useAIChat()
 
   return (
     <div className="relative flex h-[calc(100vh-80px)]">
@@ -65,11 +65,13 @@ function Home() {
         {messages.length === 0 && (
           <div className="flex-1 flex items-center justify-center px-4">
             <div className="text-center max-w-3xl mx-auto w-full">
-              <h1 className="text-4xl font-bold mb-4">
-                Weather Chat
-              </h1>
-              <p className="mb-6">
+              <h1 className="text-4xl font-bold mb-4">Weather Chat</h1>
+              <p className="mb-3">
                 Ask me about the weather! Try "What's the weather in Paris?"
+              </p>
+              <p className="text-sm">
+                Demo only. Weather results are randomly simulated, not live
+                forecasts.
               </p>
             </div>
           </div>
@@ -78,6 +80,14 @@ function Home() {
 
         <div className="sticky bottom-0 left-0 right-0 border-t z-10">
           <div className="max-w-3xl mx-auto w-full px-4 py-3">
+            <p className="text-xs mb-2">
+              Simulated weather demo. Not live weather data.
+            </p>
+            {error && (
+              <p role="alert" className="mb-3 text-sm">
+                {error.message}
+              </p>
+            )}
             {isLoading && (
               <div className="flex items-center justify-center mb-3">
                 <button
@@ -92,8 +102,8 @@ function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                if (input.trim()) {
-                  sendMessage(input)
+                if (input.trim() && !isLoading) {
+                  void sendMessage(input)
                   setInput('')
                 }
               }}
@@ -101,6 +111,7 @@ function Home() {
               <div className="relative max-w-xl mx-auto flex items-center gap-2">
                 <input
                   type="text"
+                  aria-label="Weather question"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask about the weather..."
@@ -109,6 +120,7 @@ function Home() {
                 />
                 <button
                   type="submit"
+                  aria-label="Send message"
                   disabled={!input.trim() || isLoading}
                   className="p-3 border rounded-lg disabled:opacity-50"
                 >

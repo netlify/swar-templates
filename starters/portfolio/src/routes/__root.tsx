@@ -1,12 +1,15 @@
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
+import { SiteHeader } from '../components/SiteHeader'
+import { NotFoundPage } from '../components/NotFoundPage'
+import { site } from '../lib/site'
 
 import '../styles.css'
 
-const siteName = 'Netlify App'
-const siteDescription = 'A Netlify web app'
+const siteName = site.name
+const siteDescription = site.description
 
 export const Route = createRootRoute({
+  notFoundComponent: NotFoundPage,
   head: () => ({
     meta: [
       {
@@ -51,7 +54,16 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:bg-white focus:p-4"
+        >
+          Skip to content
+        </a>
+        <SiteHeader />
+        <main id="main-content" tabIndex={-1}>
+          {children}
+        </main>
         <Scripts />
       </body>
     </html>

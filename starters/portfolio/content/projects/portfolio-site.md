@@ -1,9 +1,10 @@
 ---
-title: "Project 2"
-description: "Description of project 2."
-tags: ["Tag 1", "Tag 4", "Tag 5"]
-github: "https://github.com/your-username/project-2"
-liveUrl: "https://project-2.example.com"
+title: 'Portfolio example'
+description: 'A content-driven portfolio with projects, writing, and experience.'
+tags: ['TanStack Start', 'Markdown', 'Tailwind CSS']
 ---
 
-Details about project 2 and what it does.
+### Content first
+
+Markdown files keep project descriptions and writing separate from page layouts.
+This example includes a blog, a résumé, and a contact form.

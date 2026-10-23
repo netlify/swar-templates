@@ -1,88 +1,69 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { ChevronDown } from 'lucide-react'
+import { faqs, site } from '@/lib/content'
 
 export const Route = createFileRoute('/faq')({
+  head: () => ({
+    meta: [
+      { title: `Frequently asked questions | ${site.name}` },
+      {
+        name: 'description',
+        content:
+          'Learn how example plans and plan enquiries work before you get in touch.',
+      },
+      {
+        property: 'og:title',
+        content: `Frequently asked questions | ${site.name}`,
+      },
+      {
+        property: 'og:description',
+        content:
+          'Learn how example plans and plan enquiries work before you get in touch.',
+      },
+    ],
+  }),
   component: FAQ,
 })
 
-const faqs = [
-  {
-    question: 'What is My SaaS?',
-    answer:
-      'My SaaS is an all-in-one platform that provides real-time analytics, automated workflows, and team collaboration tools. It helps teams ship products faster by consolidating the tools they need into a single, easy-to-use interface.',
-  },
-  {
-    question: 'How does the free plan work?',
-    answer:
-      'The Starter plan is completely free and includes up to 3 projects and 1,000 events per month. No credit card is required to sign up. You can upgrade to a paid plan at any time as your needs grow.',
-  },
-  {
-    question: 'Can I cancel my subscription at any time?',
-    answer:
-      "Yes. You can cancel your subscription at any time from your account settings. When you cancel, you'll retain access to your paid features until the end of your current billing cycle.",
-  },
-  {
-    question: 'Is my data secure?',
-    answer:
-      'Absolutely. My SaaS is SOC 2 Type II compliant and uses end-to-end encryption for all data in transit and at rest. We also support SSO, role-based access controls, and provide detailed audit logs for Enterprise customers.',
-  },
-  {
-    question: 'What integrations do you support?',
-    answer:
-      'We integrate with popular tools like Slack, GitHub, Jira, Linear, Notion, and many more. Our API and webhook system also allows you to build custom integrations with any service.',
-  },
-  {
-    question: 'Do you offer support for teams?',
-    answer:
-      'All plans include community support via our forum. Pro plans get priority email support with a 24-hour response time. Enterprise customers receive a dedicated account manager and phone support with guaranteed SLAs.',
-  },
-  {
-    question: 'Can I import data from other tools?',
-    answer:
-      'Yes. We provide migration guides and import tools for common platforms. Our support team can also assist with custom migrations for Enterprise customers.',
-  },
-]
-
-function FAQ() {
+export function FAQ() {
   return (
-    <div className="min-h-screen py-20 px-4">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
-          Frequently Asked Questions
-        </h1>
-        <p className="text-center mb-14 max-w-xl mx-auto">
-          Got questions? We've got answers. If you can't find what you're
-          looking for, reach out to our support team.
-        </p>
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
-            <Accordion key={i} question={faq.question} answer={faq.answer} />
-          ))}
-        </div>
+    <div className="mx-auto max-w-3xl px-4 py-20">
+      <h1 className="mb-4 text-center text-4xl font-bold md:text-5xl">
+        Frequently Asked Questions
+      </h1>
+      <p className="mx-auto mb-14 max-w-xl text-center">
+        A few details about the plans and how enquiries work.
+      </p>
+      <div className="space-y-3">
+        {faqs.map(({ question, answer }) => (
+          <details
+            key={question}
+            className="group overflow-hidden rounded-lg border"
+          >
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 text-left transition-colors hover:bg-gray-50">
+              <span className="text-lg font-medium">{question}</span>
+              <ChevronDown
+                aria-hidden="true"
+                size={20}
+                className="shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none"
+              />
+            </summary>
+            <p className="px-5 pb-5 leading-relaxed">{answer}</p>
+          </details>
+        ))}
       </div>
-    </div>
-  )
-}
-
-function Accordion({ question, answer }: { question: string; answer: string }) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="border rounded-lg overflow-hidden">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors"
-      >
-        <span className="font-medium text-lg">{question}</span>
-        <ChevronDown
-          size={20}
-          className={`transition-transform ${open ? 'rotate-180' : ''}`}
-        />
-      </button>
-      {open && (
-        <div className="px-5 pb-5 leading-relaxed">{answer}</div>
-      )}
+      <div className="mt-10 flex flex-wrap justify-center gap-6">
+        <Link to="/" hash="pricing" className="underline underline-offset-4">
+          Compare plans
+        </Link>
+        <Link
+          to="/contact"
+          search={{ plan: 'enterprise' }}
+          className="underline underline-offset-4"
+        >
+          Contact sales
+        </Link>
+      </div>
     </div>
   )
 }

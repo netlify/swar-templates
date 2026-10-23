@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+  <rect width="800" height="450" fill="#f3f4f6"/>
+  <rect x="55" y="45" width="690" height="360" rx="16" fill="#fff" stroke="#d1d5db"/>
+  <text x="85" y="95" font-family="sans-serif" font-size="24" fill="#374151">Example task board</text>
+  <g fill="#e5e7eb"><rect x="85" y="125" width="190" height="245" rx="8"/><rect x="305" y="125" width="190" height="245" rx="8"/><rect x="525" y="125" width="190" height="245" rx="8"/></g>
+  <g fill="#fff"><rect x="100" y="175" width="160" height="65" rx="6"/><rect x="100" y="255" width="160" height="65" rx="6"/><rect x="320" y="175" width="160" height="65" rx="6"/><rect x="540" y="175" width="160" height="65" rx="6"/></g>
+  <g font-family="sans-serif" font-size="16" fill="#4b5563"><text x="100" y="155">To do</text><text x="320" y="155">In progress</text><text x="540" y="155">Done</text></g>
+</svg>

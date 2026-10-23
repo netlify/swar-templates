@@ -1,148 +1,120 @@
-import { marked } from 'marked'
-
 import { createFileRoute } from '@tanstack/react-router'
 import { allJobs, allEducations } from 'content-collections'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
+import { Badge } from '../components/ui/badge'
+import { chronologicalEntries, formatDate } from '../lib/chronology'
+import { site, pageMeta } from '../lib/site'
 
 export const Route = createFileRoute('/resume')({
-  component: App,
+  component: Resume,
+  head: () => pageMeta('Résumé', 'Professional experience and education.'),
 })
 
-function App() {
+function Resume() {
   return (
-    <div className="min-h-screen p-8 lg:p-12">
-      <div className="max-w-4xl mx-auto space-y-12">
-        <div className="text-center space-y-4">
-          <h1 className="text-5xl font-bold">
-            My Resume
-          </h1>
-          <p className="text-lg">
-            Professional Experience & Education
-          </p>
-          <Separator className="mt-8" />
+    <div className="max-w-4xl mx-auto px-4 py-12 space-y-10">
+      <header>
+        <h1 className="text-4xl font-bold mb-3">Résumé</h1>
+        <p className="text-gray-600">
+          Example professional experience and education.
+        </p>
+      </header>
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Career summary</h2>
+        <div className="flex flex-col sm:flex-row items-start gap-6">
+          <p className="flex-1 leading-relaxed">{site.summary}</p>
+          <img
+            src="/headshot-on-white.jpg"
+            alt="Example portfolio portrait"
+            className="w-32 h-40 rounded-2xl object-cover"
+          />
         </div>
-
-        {/* Career Summary */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">
-              Career Summary
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-8">
-              <p className="flex-1 leading-relaxed">
-                I am a passionate and driven professional seeking
-                opportunities that will leverage my extensive experience
-                in frontend development while providing continuous growth
-                and learning opportunities. My goal is to contribute to
-                innovative projects that challenge me to expand my skill
-                set and make meaningful impacts through technology.
-              </p>
-              <img
-                src="/headshot-on-white.jpg"
-                alt="Professional headshot"
-                className="w-44 h-52 rounded-2xl object-cover"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Work Experience */}
-        <section className="space-y-6">
-          <h2 className="text-3xl font-semibold">
-            Work Experience
-          </h2>
+      </section>
+      <section>
+        <h2 className="text-3xl font-semibold mb-6">Work Experience</h2>
+        {allJobs.length ? (
           <div className="space-y-6">
-            {allJobs.map((job) => (
-              <Card key={job.jobTitle}>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-2">
-                      <CardTitle className="text-xl">
-                        {job.jobTitle}
-                      </CardTitle>
-                      <p className="font-medium">
-                        {job.company} - {job.location}
-                      </p>
-                    </div>
-                    <Badge variant="secondary" className="text-sm">
-                      {job.startDate} - {job.endDate || 'Present'}
+            {chronologicalEntries(allJobs).map((job) => (
+              <article key={job._meta.path} className="border rounded-xl p-6">
+                <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
+                  <div>
+                    <h3 className="text-xl font-semibold">{job.jobTitle}</h3>
+                    <p>
+                      {job.company}
+                      {job.location ? ` · ${job.location}` : ''}
+                    </p>
+                  </div>
+                  <p className="text-sm">
+                    <time dateTime={job.startDate}>
+                      {formatDate(job.startDate)}
+                    </time>{' '}
+                    –{' '}
+                    {job.endDate ? (
+                      <time dateTime={job.endDate}>
+                        {formatDate(job.endDate)}
+                      </time>
+                    ) : (
+                      'Present'
+                    )}
+                  </p>
+                </div>
+                <p className="mb-4">{job.summary}</p>
+                <div className="flex flex-wrap gap-2">
+                  {job.tags.map((tag) => (
+                    <Badge key={tag} variant="outline">
+                      {tag}
                     </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="mb-6 leading-relaxed">
-                    {job.summary}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {job.tags.map((tag) => (
-                      <HoverCard key={tag}>
-                        <HoverCardTrigger>
-                          <Badge variant="outline" className="cursor-pointer">
-                            {tag}
-                          </Badge>
-                        </HoverCardTrigger>
-                        <HoverCardContent className="w-64">
-                          <p className="text-sm">
-                            Experience with {tag} in professional development
-                          </p>
-                        </HoverCardContent>
-                      </HoverCard>
-                    ))}
-                  </div>
-                  {job.content && (
-                    <div
-                      className="mt-6 prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html: marked(job.content),
-                      }}
-                    />
-                  )}
-                </CardContent>
-              </Card>
+                  ))}
+                </div>
+                <div
+                  className="prose prose-sm max-w-none mt-6"
+                  dangerouslySetInnerHTML={{ __html: job.html }}
+                />
+              </article>
             ))}
           </div>
-        </section>
-
-        {/* Education */}
-        <section className="space-y-6">
-          <h2 className="text-3xl font-semibold">
-            Education
-          </h2>
+        ) : (
+          <p>No experience added yet.</p>
+        )}
+      </section>
+      <section>
+        <h2 className="text-3xl font-semibold mb-6">Education</h2>
+        {allEducations.length ? (
           <div className="space-y-6">
-            {allEducations.map((education) => (
-              <Card key={education.school}>
-                <CardHeader>
-                  <CardTitle className="text-xl">
-                    {education.school}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="leading-relaxed">
-                    {education.summary}
-                  </p>
-                  {education.content && (
-                    <div
-                      className="mt-6 prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{
-                        __html: marked(education.content),
-                      }}
-                    />
+            {chronologicalEntries(allEducations).map((entry) => (
+              <article key={entry._meta.path} className="border rounded-xl p-6">
+                <h3 className="text-xl font-semibold mb-2">{entry.school}</h3>
+                <p className="text-sm mb-4">
+                  <time dateTime={entry.startDate}>
+                    {formatDate(entry.startDate)}
+                  </time>{' '}
+                  –{' '}
+                  {entry.endDate ? (
+                    <time dateTime={entry.endDate}>
+                      {formatDate(entry.endDate)}
+                    </time>
+                  ) : (
+                    'Present'
                   )}
-                </CardContent>
-              </Card>
+                </p>
+                <p className="mb-4">{entry.summary}</p>
+                <div className="flex flex-wrap gap-2">
+                  {entry.tags.map((tag) => (
+                    <Badge key={tag} variant="outline">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+                <div
+                  className="prose prose-sm max-w-none mt-6"
+                  dangerouslySetInnerHTML={{ __html: entry.html }}
+                />
+              </article>
             ))}
           </div>
-        </section>
-      </div>
+        ) : (
+          <p>No education added yet.</p>
+        )}
+      </section>
     </div>
   )
 }

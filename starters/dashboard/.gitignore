@@ -6,3 +6,5 @@ dist-ssr
 .env
 .netlify
 .tanstack
+test-results/
+playwright-report/

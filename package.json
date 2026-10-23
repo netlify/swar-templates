@@ -2,10 +2,11 @@
   "name": "swar-templates",
   "private": true,
   "scripts": {
+    "check:guidance": "node scripts/check-guidance.mjs",
     "smoke": "node scripts/smoke.test.mjs",
     "test": "node scripts/smoke.test.mjs"
   },
   "engines": {
-    "node": "^22.12.0 || >=24.0.0"
+    "node": "^22.13.0 || ^24.0.0 || >=26.0.0"
   }
 }

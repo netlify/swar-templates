@@ -2,46 +2,19 @@
 
 Netlify starter templates for [TanStack Start](https://tanstack.com/start) + React. Each project under `starters/` is a standalone, deployable app.
 
-`manifest.json` is the catalog used to select a starter and its framework. `frameworks/tanstack-start-react/.claude/skills/` contains shared implementation guidance that the scaffolding consumer can supply alongside a starter. Each starter's `AGENTS.md` describes the code actually included in that app.
-
-## Choosing a starter for an AI agent
-
-Use `basic` by default. It supplies the framework, Netlify adapter, theme tokens, and UI primitives without committing the generated app to a sample product or design. Choose an example starter when its behavior closely matches the request: Markdown content, charts, Stripe checkout, streaming chat, or Netlify Forms.
-
-For frontier models, keep the working infrastructure and load relevant skills as needed; let the model create the product structure and design. For smaller models, a closely matched example also supplies useful implementation patterns and reduces how much integration work must be generated. These are engineering recommendations, not measured quality claims for this repository. Compare `basic`, a matched example, and a blank scaffold on representative prompts for each model tier; record functional success, design fit, time, tokens, and repair attempts before changing selection defaults.
-
-The examples demonstrate integrations. They are not complete production products: the weather tool returns mock data, the SaaS starter has marketing pages, and Stripe Checkout needs verified webhooks and fulfillment for a real store. Provider model selection is separate from npm dependency versions and should be reviewed when configuring the chat example.
-
 ## Dependency baseline
 
-Stable releases were checked against npm on 2026-10-13. Shared packages use the same exact version in every starter. Node 24 LTS is selected in `.nvmrc`, Netlify build settings, and CI; the declared engine range also permits Node 22.12+.
+All starters use React 19.3.1, TanStack Start 1.169.4, Router 1.170.46, Vite 8.3.5, and TypeScript 6.0.3. Node 24 is selected for local development, Netlify builds, and CI. TypeScript stays below 7 because the Netlify adapter’s tracing dependencies require the JavaScript compiler API. Review and test major upgrades separately.
 
-| Package | Version |
-| --- | --- |
-| React / React DOM | 19.3.0 |
-| TanStack Start | 1.169.1 |
-| TanStack Router | 1.170.44 |
-| Vite / React plugin | 8.3.4 / 6.1.2 |
-| Tailwind CSS | 4.3.3 |
-| TypeScript | 6.0.3 |
-| Netlify TanStack Start adapter | 1.3.19 |
-| Content Collections core / Vite plugin | 0.15.3 / 0.3.1 |
-| TanStack AI | 0.68.0 |
-| Stripe | 23.0.0 |
-
-**TypeScript compatibility exception:** Directly upgrading to TypeScript 7.0.2 fails while Vite loads the Netlify plugin. Its dependency-tracing packages (`zip-it-and-ship-it` → `precinct` → `detective-typescript` → `typescript-estree` → `ts-api-utils`) still import the TypeScript 6 JavaScript compiler API; accessing `TypeFlags.Intrinsic` throws before application compilation. These templates keep 6.0.3, and Renovate enforces this bound until that integration supports a direct upgrade. Microsoft's [TypeScript 7 API compatibility guidance](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6-0) also describes a side-by-side installation, which has not been validated here.
-
-To refresh dependencies, query `npm view <package>@latest version peerDependencies engines`, update all occurrences together, review major-version migrations, and run the full smoke suite. The repository currently omits lockfiles, so exact direct pins do not freeze transitive dependencies. For reproducible releases, introduce per-starter lockfiles and `npm ci` together with a check of the scaffolding consumer's package-manager behavior.
+The standalone starters omit tracked lockfiles, so exact direct pins do not freeze transitive dependencies.
 
 ## Smoke tests
 
-Every PR installs and builds each starter, runs TypeScript checks, boots its production output via `vite preview`, and verifies home-page text, social metadata, and representative secondary routes. The suite also checks that every manifest entry has coverage. Workflow: `.github/workflows/smoke-test.yml`. Tests: `scripts/smoke.test.mjs` (uses `node:test`).
-
-These checks do not exercise browser hydration, chart drawing, paid AI requests, Stripe payments, or deployed Netlify Forms submission. Verify the relevant flows separately before shipping a generated app.
+Every PR runs a smoke test that builds each starter, type-checks it, boots its production output via `vite preview`, and verifies the home page renders expected text. Workflow: `.github/workflows/smoke-test.yml`. Tests: `scripts/smoke.test.mjs` (uses `node:test`).
 
 ### Running locally
 
-Requirements: Node 24 LTS recommended (`nvm use`), npm. Minimum supported runtime: Node 22.12.
+Requirements: npm and Node 22.13+ on the Node 22 line, Node 24, or Node 26+. Node 24 is recommended (`nvm use`). The newer lint/test tooling sets the Node 22 minimum alongside TanStack Start.
 
 **Test every starter:**
 
@@ -60,7 +33,7 @@ Available ids: `basic`, `ai-chat`, `blog`, `calculator`, `dashboard`, `ecommerce
 
 **Useful env vars:**
 
-- `SKIP_INSTALL=1` — skip `npm install --no-package-lock`; use only after installing the current package versions
+- `SKIP_INSTALL=1` — skip `npm install --no-package-lock` in the starter even if `node_modules` is missing
 - `SKIP_BUILD=1` — skip `npm run build` (use the existing `dist/`)
 - `PORT=9000` — bind `vite preview` to a different port (default `8787`)
 
@@ -76,14 +49,35 @@ rm -rf starters/basic/node_modules starters/basic/dist
 npm run smoke -- basic
 ```
 
-Installation runs by default even when `node_modules` exists, so dependency edits are tested. The build step runs unless `SKIP_BUILD=1` is set. Type checking always runs after the build, because routing and content plugins generate types during the first build.
+Installation runs by default even when `node_modules` exists, so dependency edits are tested. Type checking runs after the build generates route/content types. `SKIP_INSTALL=1` uses the existing installation.
 
 **Browse a built starter interactively:**
 
 ```bash
 cd starters/basic
 npm install --no-package-lock && npm run build
-npm run typecheck
-npm run preview -- --host 127.0.0.1
+npx vite preview --host 127.0.0.1
 # open the URL printed by vite preview — Ctrl+C to stop
 ```
+
+## Shared instructions and framework skills
+
+Each starter's `AGENTS.md` describes its actual source, commands, configuration, and demo limits. Framework skills are supplied separately from `frameworks/tanstack-start-react/.claude/skills`; a standalone starter does not contain that directory. Keep starter-specific instructions when applying shared guidance.
+
+When implementing a starter change, refresh compatible dependencies, remove unused/duplicate entries, check installed APIs and peer requirements, and validate changed behavior locally. A Vite build does not run TypeScript checks. Only run named package scripts that exist in that starter's package.json.
+
+Check the documented starter paths/scripts and all nine skill entrypoints:
+
+```bash
+npm run check:guidance
+```
+
+The skills mark complete example modules with `file=...` code fences and configuration additions with `merge=...`. To build and type-check those examples against both the newer Basic packages and the older Ecommerce packages, install those starters plus Blog, then install optional documentation-only integrations in a temporary directory:
+
+```bash
+npm run smoke -- basic ecommerce blog
+npm install --prefix /tmp/swar-guidance-deps --no-save --package-lock=false @netlify/identity@2.0.0 @netlify/functions @content-collections/core@0.13.1 @content-collections/vite@0.2.9
+GUIDANCE_NODE_MODULES=/tmp/swar-guidance-deps/node_modules npm run check:guidance
+```
+
+The complete check writes isolated apps into an OS temporary directory and prints their paths. It does not edit starter source, deploy a site, configure live services, or send real form/auth requests. Optional integrations are kept out of every starter's dependencies. Compilation checks imports and types; HTTP and browser checks are still needed for changed user flows.

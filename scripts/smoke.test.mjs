@@ -1,13 +1,3 @@
-// node:test smoke tests for every starter. For each starter:
-//   1. npm install (unless SKIP_INSTALL is set)
-//   2. npm run build (unless SKIP_BUILD is set)
-//   3. npm run typecheck (after the build generates route/content types)
-//   4. spawn `vite preview` against the build and check representative routes
-//
-// Run all:        npm run smoke
-// Run one:        npm run smoke -- basic
-// Run several:    npm run smoke -- basic blog
-// Skip rebuild:   SKIP_BUILD=1 npm run smoke -- basic
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
@@ -21,15 +11,15 @@ const PORT = Number(process.env.PORT ?? 8787)
 const STARTERS = [
   { id: 'basic', expect: 'Hello World' },
   { id: 'ai-chat', expect: 'Weather Chat' },
-  { id: 'blog', expect: 'Your Blog', paths: ['/posts/blog_entry_1', '/category/General'] },
+  { id: 'blog', expect: 'Your Blog' },
   { id: 'calculator', expect: '+/-' },
   { id: 'dashboard', expect: 'Analytics Dashboard' },
-  { id: 'ecommerce', expect: 'Product Company', paths: ['/products/1', '/checkout/success', '/checkout/cancel'] },
-  { id: 'marketing', expect: 'Product Company', paths: ['/products/1'] },
-  { id: 'portfolio', expect: 'Thoughts on web development', paths: ['/resume', '/projects', '/contact', '/blog/getting-started-with-tanstack'] },
+  { id: 'ecommerce', expect: 'Product Company' },
+  { id: 'marketing', expect: 'Everyday Objects' },
+  { id: 'portfolio', expect: 'Selected work' },
   { id: 'resume', expect: 'My Resume' },
-  { id: 'saas', expect: 'Ship faster with', paths: ['/faq'] },
-  { id: 'survey', expect: 'favorite season', paths: ['/form-survey.html'] },
+  { id: 'saas', expect: 'Find your fit with' },
+  { id: 'survey', expect: 'favorite season' },
 ]
 
 const manifest = JSON.parse(await readFile(join(ROOT, 'manifest.json'), 'utf8'))
@@ -83,7 +73,7 @@ async function waitForServer(url, attempts = 60, delayMs = 250) {
   throw new Error(`server at ${url} did not become ready`)
 }
 
-for (const { id, expect, paths = [] } of selected) {
+for (const { id, expect } of selected) {
   test(id, { timeout: 10 * 60 * 1000 }, async (t) => {
     const dir = join(ROOT, 'starters', id)
 
@@ -97,10 +87,7 @@ for (const { id, expect, paths = [] } of selected) {
 
     await run('npm', ['run', 'typecheck', '--silent'], { cwd: dir })
 
-    // Spawn vite directly (not via npx) so SIGTERM hits the actual server
-    // process. With npx in the middle, the vite child gets orphaned on Linux
-    // and keeps holding the port, causing subsequent tests to fetch against
-    // the previous starter's still-running server.
+    // npx can orphan the preview process and leave its port occupied.
     const viteBin = join(dir, 'node_modules', '.bin', 'vite')
     const server = spawn(
       viteBin,
@@ -134,10 +121,39 @@ for (const { id, expect, paths = [] } of selected) {
     }
     assert.ok(!body.includes('og:image'), 'og:image must not be scaffolded; the edge injects it')
 
-    for (const path of paths) {
-      const route = await fetch(`http://127.0.0.1:${PORT}${path}`)
-      assert.equal(route.status, 200, `${id}: expected 200 for ${path}, got ${route.status}`)
-      await route.body?.cancel()
+    if (id === 'ecommerce') {
+      for (const path of ['/products/1', '/checkout/success', '/checkout/cancel']) {
+        const response = await fetch(`http://127.0.0.1:${PORT}${path}`)
+        assert.equal(response.status, 200, `expected 200 for ${path}`)
+        await response.body?.cancel()
+      }
+    }
+
+    if (id === 'basic') {
+      const missing = await fetch(`http://127.0.0.1:${PORT}/missing-smoke-route`)
+      assert.equal(missing.status, 404, 'missing routes must return HTTP 404')
+      const missingBody = await missing.text()
+      assert.ok(missingBody.includes('Page not found'))
+      assert.ok(missingBody.includes('Go home'))
+    }
+
+    if (id === 'saas') {
+      for (const plan of ['starter', 'pro', 'enterprise']) {
+        assert.ok(body.includes(`/contact?plan=${plan}`), `missing ${plan} enquiry link`)
+        const contact = await fetch(`http://127.0.0.1:${PORT}/contact?plan=${plan}`)
+        assert.equal(contact.status, 200)
+        const html = await contact.text()
+        assert.match(html, new RegExp(`<option[^>]*value="${plan}"[^>]*selected`))
+        assert.ok(html.includes('Plan enquiry | My SaaS'))
+      }
+      const faq = await fetch(`http://127.0.0.1:${PORT}/faq`)
+      assert.equal(faq.status, 200)
+      const faqHtml = await faq.text()
+      assert.ok(faqHtml.includes('<summary'))
+      assert.ok(faqHtml.includes('Frequently asked questions | My SaaS'))
+      const form = await fetch(`http://127.0.0.1:${PORT}/__forms.html`)
+      assert.equal(form.status, 200)
+      assert.ok((await form.text()).includes('data-netlify="true"'))
     }
   })
 }

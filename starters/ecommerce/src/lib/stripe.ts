@@ -1,5 +1,5 @@
-import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
+import { createServerFn } from '@tanstack/react-start'
 import products from '@/data/products'
 
 export const getStripeEnabled = createServerFn({ method: 'GET' }).handler(
